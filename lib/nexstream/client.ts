@@ -7,11 +7,11 @@ export function getEmbedUrl(
   const apiKey = process.env.NEXSTREAM_API_KEY;
   if (!apiKey) throw new Error("NEXSTREAM_API_KEY is not set");
 
-  const base = `https://api.codespecters.com/v1/embed`;
+  const base = `https://api.codespecters.com/embed`;
 
   if (mediaType === "tv" && season !== undefined && episode !== undefined) {
-    return `${base}?tmdb=${tmdbId}&season=${season}&episode=${episode}&api_key=${apiKey}`;
+    return `${base}/tv/${tmdbId}/${season}/${episode}?apikey=${apiKey}`;
   }
 
-  return `${base}?tmdb=${tmdbId}&api_key=${apiKey}`;
+  return `${base}/movie/${tmdbId}?apikey=${apiKey}`;
 }
