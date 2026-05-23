@@ -32,7 +32,7 @@ export default function ContentRow({ title, items, onItemClick, mediaType }: Con
       <div className="group relative">
         <button
           onClick={() => scroll("left")}
-          className="absolute -left-2 top-1/2 z-10 -translate-y-1/2 rounded-full bg-background/80 p-2 opacity-0 shadow-lg backdrop-blur transition-opacity group-hover:opacity-100"
+          className="absolute -left-2 top-1/2 z-10 -translate-y-1/2 rounded-full bg-background/80 p-2 opacity-0 shadow-lg backdrop-blur transition-all duration-300 ease-in-out group-hover:opacity-100 active:scale-95"
         >
           <ChevronLeft className="h-5 w-5" />
         </button>
@@ -54,7 +54,7 @@ export default function ContentRow({ title, items, onItemClick, mediaType }: Con
 
         <button
           onClick={() => scroll("right")}
-          className="absolute -right-2 top-1/2 z-10 -translate-y-1/2 rounded-full bg-background/80 p-2 opacity-0 shadow-lg backdrop-blur transition-opacity group-hover:opacity-100"
+          className="absolute -right-2 top-1/2 z-10 -translate-y-1/2 rounded-full bg-background/80 p-2 opacity-0 shadow-lg backdrop-blur transition-all duration-300 ease-in-out group-hover:opacity-100 active:scale-95"
         >
           <ChevronRight className="h-5 w-5" />
         </button>

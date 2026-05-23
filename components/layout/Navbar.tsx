@@ -45,17 +45,17 @@ export default function Navbar({ isGuest = false }: NavbarProps) {
             Lumina
           </Link>
           <div className="hidden items-center gap-6 md:flex">
-            <Link href="/browse" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+            <Link href="/browse" className="text-sm text-muted-foreground hover:text-foreground transition-all duration-300 ease-in-out">
               Home
             </Link>
-            <Link href="/movies" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+            <Link href="/movies" className="text-sm text-muted-foreground hover:text-foreground transition-all duration-300 ease-in-out">
               Movies
             </Link>
-            <Link href="/tv" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+            <Link href="/tv" className="text-sm text-muted-foreground hover:text-foreground transition-all duration-300 ease-in-out">
               TV Shows
             </Link>
             {!isGuest && (
-              <Link href="/my-list" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+              <Link href="/my-list" className="text-sm text-muted-foreground hover:text-foreground transition-all duration-300 ease-in-out">
                 My List
               </Link>
             )}
@@ -76,7 +76,7 @@ export default function Navbar({ isGuest = false }: NavbarProps) {
               />
             </form>
           ) : (
-            <button onClick={() => setSearchOpen(true)} className="text-muted-foreground hover:text-foreground">
+            <button onClick={() => setSearchOpen(true)} className="text-muted-foreground hover:text-foreground transition-all duration-300 ease-in-out active:scale-95">
               <Search className="h-5 w-5" />
             </button>
           )}
@@ -84,33 +84,33 @@ export default function Navbar({ isGuest = false }: NavbarProps) {
           {isGuest ? (
             <Link
               href="/login"
-              className="flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary/90 transition-colors"
+              className="flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary/90 transition-all duration-300 ease-in-out active:scale-95"
             >
               <LogIn className="h-4 w-4" />
               Sign In
             </Link>
           ) : (
             <>
-              <button className="text-muted-foreground hover:text-foreground">
+              <button className="text-muted-foreground hover:text-foreground transition-all duration-300 ease-in-out active:scale-95">
                 <Bell className="h-5 w-5" />
               </button>
 
               <div className="relative">
                 <button
                   onClick={() => setMenuOpen(!menuOpen)}
-                  className="flex items-center gap-1 text-muted-foreground hover:text-foreground"
+                  className="flex items-center gap-1 text-muted-foreground hover:text-foreground transition-all duration-300 ease-in-out active:scale-95"
                 >
-                  <div className="flex h-8 w-8 items-center justify-center rounded-md bg-gradient-to-br from-purple-500 to-pink-500">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-purple-500 to-pink-500">
                     <User className="h-4 w-4 text-white" />
                   </div>
                   <ChevronDown className="h-3 w-3" />
                 </button>
 
                 {menuOpen && (
-                  <div className="absolute right-0 top-full mt-2 w-48 rounded-lg border border-border bg-card p-2 shadow-xl">
+                  <div className="absolute right-0 top-full mt-2 w-48 rounded-2xl border border-border bg-card p-2 shadow-xl">
                     <Link
                       href="/profiles"
-                      className="flex items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-secondary"
+                      className="flex items-center gap-2 rounded-full px-3 py-2 text-sm hover:bg-secondary transition-all duration-300 ease-in-out"
                       onClick={() => setMenuOpen(false)}
                     >
                       <User className="h-4 w-4" />
@@ -118,7 +118,7 @@ export default function Navbar({ isGuest = false }: NavbarProps) {
                     </Link>
                     <Link
                       href="/history"
-                      className="flex items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-secondary"
+                      className="flex items-center gap-2 rounded-full px-3 py-2 text-sm hover:bg-secondary transition-all duration-300 ease-in-out"
                       onClick={() => setMenuOpen(false)}
                     >
                       Watch History
@@ -126,7 +126,7 @@ export default function Navbar({ isGuest = false }: NavbarProps) {
                     <hr className="my-1 border-border" />
                     <button
                       onClick={handleSignOut}
-                      className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm text-destructive hover:bg-secondary"
+                      className="flex w-full items-center gap-2 rounded-full px-3 py-2 text-sm text-destructive hover:bg-secondary transition-all duration-300 ease-in-out active:scale-95"
                     >
                       <LogOut className="h-4 w-4" />
                       Sign Out

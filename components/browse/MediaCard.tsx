@@ -17,9 +17,9 @@ export default function MediaCard({ item, onClick, mediaType }: MediaCardProps) 
   return (
     <button
       onClick={() => onClick({ ...item, media_type: type })}
-      className="group relative flex-shrink-0 w-36 md:w-44 overflow-hidden rounded-lg transition-transform duration-300 hover:scale-105 hover:z-10"
+      className="group relative flex-shrink-0 w-36 md:w-44 overflow-hidden rounded-2xl transition-all duration-300 ease-in-out hover:scale-105 hover:z-10 active:scale-95"
     >
-      <div className="relative aspect-[2/3] w-full overflow-hidden rounded-lg bg-muted">
+      <div className="relative aspect-[2/3] w-full overflow-hidden rounded-2xl bg-muted">
         <Image
           src={getImageUrl(item.poster_path)}
           alt={getTitle(item)}
@@ -27,7 +27,7 @@ export default function MediaCard({ item, onClick, mediaType }: MediaCardProps) 
           className="object-cover"
           sizes="(max-width: 768px) 144px, 176px"
         />
-        <div className="absolute inset-0 bg-black/0 transition-colors group-hover:bg-black/40" />
+        <div className="absolute inset-0 bg-black/0 transition-all duration-300 ease-in-out group-hover:bg-black/40" />
         <div className="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity group-hover:opacity-100">
           <div className="rounded-full bg-primary/90 p-3">
             <Play className="h-6 w-6 fill-white text-white" />

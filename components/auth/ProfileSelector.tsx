@@ -73,10 +73,10 @@ export default function ProfileSelector({ profiles }: { profiles: Profile[] }) {
           <div key={profile.id} className="group relative">
             <button
               onClick={() => !managing && selectProfile(profile.id)}
-              className="flex flex-col items-center gap-3 rounded-lg p-4 transition-transform hover:scale-105"
+              className="flex flex-col items-center gap-3 rounded-2xl p-4 transition-all duration-300 ease-in-out hover:scale-105 active:scale-95"
             >
               <div
-                className={`flex h-24 w-24 items-center justify-center rounded-xl bg-gradient-to-br ${AVATAR_COLORS[i % AVATAR_COLORS.length]} text-3xl font-bold text-white shadow-lg`}
+                className={`flex h-24 w-24 items-center justify-center rounded-2xl bg-gradient-to-br ${AVATAR_COLORS[i % AVATAR_COLORS.length]} text-3xl font-bold text-white shadow-lg`}
               >
                 {profile.name.charAt(0).toUpperCase()}
               </div>
@@ -87,7 +87,7 @@ export default function ProfileSelector({ profiles }: { profiles: Profile[] }) {
             {managing && (
               <button
                 onClick={() => handleDelete(profile.id)}
-                className="absolute -right-2 -top-2 rounded-full bg-destructive p-1.5 text-white shadow-lg hover:bg-destructive/90"
+                className="absolute -right-2 -top-2 rounded-full bg-destructive p-1.5 text-white shadow-lg hover:bg-destructive/90 transition-all duration-300 ease-in-out active:scale-95"
               >
                 <Trash2 className="h-3.5 w-3.5" />
               </button>
@@ -98,9 +98,9 @@ export default function ProfileSelector({ profiles }: { profiles: Profile[] }) {
         {profiles.length < 5 && !showCreate && (
           <button
             onClick={() => setShowCreate(true)}
-            className="flex flex-col items-center gap-3 rounded-lg p-4 transition-transform hover:scale-105"
+            className="flex flex-col items-center gap-3 rounded-2xl p-4 transition-all duration-300 ease-in-out hover:scale-105 active:scale-95"
           >
-            <div className="flex h-24 w-24 items-center justify-center rounded-xl border-2 border-dashed border-border text-muted-foreground hover:border-primary hover:text-primary">
+            <div className="flex h-24 w-24 items-center justify-center rounded-2xl border-2 border-dashed border-border text-muted-foreground hover:border-primary hover:text-primary transition-all duration-300 ease-in-out">
               <Plus className="h-10 w-10" />
             </div>
             <span className="text-sm text-muted-foreground">Add Profile</span>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { motion } from "framer-motion";
 import { X, ChevronDown, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { MediaItem, Season, Episode } from "@/types";
@@ -127,24 +128,30 @@ export default function VideoPlayer({
   }, []);
 
   return (
-    <div className="fixed inset-0 z-[60] bg-black">
+    <motion.div
+      initial={{ opacity: 0, y: 40 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: 20 }}
+      transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+      className="fixed inset-0 z-[60] bg-black"
+    >
       <div className="absolute right-4 top-4 z-10 flex items-center gap-2">
         {providers.length > 1 && (
           <div className="relative">
             <button
               onClick={() => setShowServers(!showServers)}
-              className="flex items-center gap-1.5 rounded-full bg-black/60 px-3 py-2 text-sm text-white hover:bg-black/80"
+              className="flex items-center gap-1.5 rounded-full bg-black/60 px-3 py-2 text-sm text-white hover:bg-black/80 transition-all duration-300 ease-in-out active:scale-95"
             >
               <RefreshCw className="h-4 w-4" />
               {providers[providerIndex]?.name ?? "Server"}
             </button>
             {showServers && (
-              <div className="absolute right-0 top-full mt-1 w-40 rounded-lg bg-zinc-900 p-1 shadow-lg">
+              <div className="absolute right-0 top-full mt-1 w-40 rounded-2xl bg-zinc-900 p-1 shadow-lg">
                 {providers.map((p, i) => (
                   <button
                     key={p.name}
                     onClick={() => switchProvider(i)}
-                    className={`w-full rounded-md px-3 py-2 text-left text-sm transition-colors ${
+                    className={`w-full rounded-full px-3 py-2 text-left text-sm transition-all duration-300 ease-in-out active:scale-95 ${
                       i === providerIndex
                         ? "bg-primary text-white"
                         : "text-zinc-300 hover:bg-zinc-800"
@@ -159,7 +166,7 @@ export default function VideoPlayer({
         )}
         <button
           onClick={onClose}
-          className="rounded-full bg-black/60 p-2 text-white hover:bg-black/80"
+          className="rounded-full bg-black/60 p-2 text-white hover:bg-black/80 transition-all duration-300 ease-in-out active:scale-95"
         >
           <X className="h-6 w-6" />
         </button>
@@ -186,7 +193,7 @@ export default function VideoPlayer({
         </div>
 
         {mediaType === "tv" && (
-          <div className="bg-card p-4">
+          <div className="bg-card/95 backdrop-blur-sm border-t border-white/10 p-4 rounded-t-2xl">
             <div className="flex items-center justify-between">
               <div>
                 <h3 className="font-semibold">{getTitle(item)}</h3>
@@ -213,7 +220,7 @@ export default function VideoPlayer({
                     <button
                       key={s.season_number}
                       onClick={() => { setSeason(s.season_number); setEpisode(1); }}
-                      className={`whitespace-nowrap rounded-full px-4 py-1.5 text-sm transition-colors ${
+                      className={`whitespace-nowrap rounded-full px-4 py-1.5 text-sm transition-all duration-300 ease-in-out active:scale-95 ${
                         season === s.season_number
                           ? "bg-primary text-white"
                           : "bg-secondary hover:bg-secondary/80"
@@ -228,7 +235,7 @@ export default function VideoPlayer({
                     <button
                       key={ep.episode_number}
                       onClick={() => setEpisode(ep.episode_number)}
-                      className={`w-full rounded-lg p-3 text-left transition-colors ${
+                      className={`w-full rounded-2xl p-3 text-left transition-all duration-300 ease-in-out active:scale-95 ${
                         episode === ep.episode_number
                           ? "bg-primary/20 border border-primary/30"
                           : "hover:bg-secondary"
@@ -253,6 +260,6 @@ export default function VideoPlayer({
           </div>
         )}
       </div>
-    </div>
+    </motion.div>
   );
 }
