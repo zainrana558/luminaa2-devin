@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import HeroBanner from "./HeroBanner";
 import ContentRow from "./ContentRow";
+import AnimeSection from "./AnimeSection";
 import DetailModal from "@/components/modals/DetailModal";
 import VideoPlayer from "@/components/modals/VideoPlayer";
 import type { MediaItem, ContentRow as ContentRowType } from "@/types";
@@ -11,9 +12,12 @@ interface BrowseClientProps {
   heroItems: MediaItem[];
   rows: ContentRowType[];
   profileId: string | null;
+  animePopular?: MediaItem[];
+  animeTop?: MediaItem[];
+  animeTrending?: MediaItem[];
 }
 
-export default function BrowseClient({ heroItems, rows, profileId }: BrowseClientProps) {
+export default function BrowseClient({ heroItems, rows, profileId, animePopular = [], animeTop = [], animeTrending = [] }: BrowseClientProps) {
   const [selectedItem, setSelectedItem] = useState<MediaItem | null>(null);
   const [playingItem, setPlayingItem] = useState<MediaItem | null>(null);
 
@@ -54,6 +58,13 @@ export default function BrowseClient({ heroItems, rows, profileId }: BrowseClien
             mediaType={row.mediaType}
           />
         ))}
+
+        <AnimeSection
+          popularAnime={animePopular}
+          topAnime={animeTop}
+          trendingAnime={animeTrending}
+          onItemClick={handleItemClick}
+        />
       </div>
 
       {selectedItem && (

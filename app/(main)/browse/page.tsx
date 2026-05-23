@@ -1,5 +1,5 @@
 import { cookies } from "next/headers";
-import { getTrending, getPopular, getTopRated, getNowPlaying } from "@/lib/tmdb/client";
+import { getTrending, getPopular, getTopRated, getNowPlaying, getAnimePopular, getAnimeTopRated, getAnimeTrending } from "@/lib/tmdb/client";
 import { getContinueWatching } from "@/actions/progress";
 import BrowseClient from "@/components/browse/BrowseClient";
 import type { ContentRow, MediaItem } from "@/types";
@@ -8,12 +8,15 @@ export default async function BrowsePage() {
   const cookieStore = await cookies();
   const profileId = cookieStore.get("profile_id")?.value || null;
 
-  const [trending, popularMovies, popularTv, topRatedMovies, nowPlaying] = await Promise.all([
+  const [trending, popularMovies, popularTv, topRatedMovies, nowPlaying, animePopular, animeTop, animeTrending] = await Promise.all([
     getTrending("all", "week"),
     getPopular("movie"),
     getPopular("tv"),
     getTopRated("movie"),
     getNowPlaying(),
+    getAnimePopular(),
+    getAnimeTopRated(),
+    getAnimeTrending(),
   ]);
 
   const heroItems = trending.results.slice(0, 5);
@@ -48,5 +51,5 @@ export default async function BrowsePage() {
     { title: "Top Rated Movies", items: topRatedMovies.results, mediaType: "movie" },
   );
 
-  return <BrowseClient heroItems={heroItems} rows={rows} profileId={profileId} />;
+  return <BrowseClient heroItems={heroItems} rows={rows} profileId={profileId} animePopular={animePopular.results} animeTop={animeTop.results} animeTrending={animeTrending.results} />;
 }
