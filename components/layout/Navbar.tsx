@@ -72,6 +72,9 @@ export default function Navbar({ isGuest = false }: NavbarProps) {
             <Link href="/romance" className="text-sm text-muted-foreground hover:text-foreground transition-all duration-300 ease-in-out">
               Romance
             </Link>
+            <Link href="/scifi" className="text-sm text-muted-foreground hover:text-foreground transition-all duration-300 ease-in-out">
+              Sci-Fi
+            </Link>
             {!isGuest && (
               <Link href="/my-list" className="text-sm text-muted-foreground hover:text-foreground transition-all duration-300 ease-in-out">
                 My List
