@@ -7,8 +7,10 @@ export default function AnimeCanvas() {
   const rafRef = useRef<number>(0);
 
   useEffect(() => {
+    if (!canvasRef.current) return;
+    console.log('Canvas ref found', canvasRef.current);
+
     const canvas = canvasRef.current;
-    if (!canvas) return;
 
     // Mobile CSS fallback — no Three.js
     const isMobile = window.matchMedia("(max-width: 768px)").matches;
@@ -17,26 +19,27 @@ export default function AnimeCanvas() {
     let disposed = false;
 
     (async () => {
-      try {
-        const THREE = await import("three");
-        if (disposed || !canvas) return;
+      console.log('Three.js starting');
+      const THREE = await import("three");
+      if (disposed || !canvas) return;
 
-        const width = canvas.clientWidth || window.innerWidth;
-        const height = canvas.clientHeight || window.innerHeight;
-        const cores = navigator.hardwareConcurrency ?? 4;
-        const petalCount = cores < 4 ? 60 : 120;
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+      const cores = navigator.hardwareConcurrency ?? 4;
+      const petalCount = cores < 4 ? 60 : 120;
 
-        // ── Scene ────────────────────────────────────────────────
-        const scene = new THREE.Scene();
-        scene.fog = new THREE.FogExp2(0x0a0020, 0.02);
+      // ── Scene ────────────────────────────────────────────────
+      const scene = new THREE.Scene();
+      scene.fog = new THREE.FogExp2(0x0a0020, 0.02);
 
-        const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
-        camera.position.set(0, 0, 5);
+      const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
+      camera.position.set(0, 0, 5);
 
-        const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-        renderer.setSize(width, height);
-        renderer.setClearColor(0x000000, 0);
+      const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.setSize(width, height);
+      renderer.setClearColor(0x000000, 0);
+      console.log('Renderer created', renderer);
 
         // ── Lighting ─────────────────────────────────────────────
         const ambientLight = new THREE.AmbientLight(0xff6b9d, 0.6);
@@ -231,9 +234,6 @@ export default function AnimeCanvas() {
           renderer.dispose();
           scene.clear();
         };
-      } catch {
-        // WebGL failed — CSS fallback renders via sibling div
-      }
     })();
 
     return () => {
@@ -247,8 +247,16 @@ export default function AnimeCanvas() {
   return (
     <canvas
       ref={canvasRef}
-      className="absolute inset-0 w-full h-full pointer-events-none"
-      style={{ willChange: "transform" }}
+      style={{
+        position: "fixed",
+        top: 0,
+        left: 0,
+        width: "100vw",
+        height: "100vh",
+        zIndex: 0,
+        pointerEvents: "none",
+        willChange: "transform",
+      }}
     />
   );
 }
