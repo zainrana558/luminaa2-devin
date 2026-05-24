@@ -1,15 +1,14 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  X, Play, Plus, Check, Star, Clock, Calendar, Film,
-} from "lucide-react";
+import { X, Play, Plus, Check, Star, Clock, Calendar, Film, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { getImageUrl, getTitle, getYear, formatRuntime, formatRating } from "@/lib/utils";
 import type { MediaDetails, MediaItem, CastMember } from "@/types";
 import MediaCard from "@/components/browse/MediaCard";
+import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
 
 interface DetailModalProps {
   mediaId: number;
@@ -19,36 +18,41 @@ interface DetailModalProps {
   profileId: string | null;
 }
 
-const GENRE_COLORS = [
-  "bg-purple-500/20 text-purple-300 border-purple-500/30",
-  "bg-pink-500/20 text-pink-300 border-pink-500/30",
-  "bg-blue-500/20 text-blue-300 border-blue-500/30",
-  "bg-teal-500/20 text-teal-300 border-teal-500/30",
-  "bg-amber-500/20 text-amber-300 border-amber-500/30",
-  "bg-rose-500/20 text-rose-300 border-rose-500/30",
-];
+// Reusable accent heading — matches ContentRow pattern from Prompt 3
+function AccentHeading({ children }: { children: React.ReactNode }) {
+  return (
+    <div style={{ position: "relative", paddingLeft: "12px" }}>
+      <span aria-hidden style={{
+        position: "absolute", left: 0, top: "3px", bottom: "3px",
+        width: "4px", borderRadius: "2px",
+        background: "var(--color-primary, #7c3aed)",
+      }} />
+      <h3 className="text-base font-semibold md:text-lg">{children}</h3>
+    </div>
+  );
+}
 
 export default function DetailModal({
-  mediaId,
-  mediaType,
-  onClose,
-  onPlay,
-  profileId,
+  mediaId, mediaType, onClose, onPlay, profileId,
 }: DetailModalProps) {
   const [details, setDetails] = useState<MediaDetails | null>(null);
   const [loading, setLoading] = useState(true);
   const [inList, setInList] = useState(false);
   const [userRating, setUserRating] = useState<number | null>(null);
 
+  // Cast scroll refs
+  const castScrollRef = useRef<HTMLDivElement>(null);
+  const [castAtStart, setCastAtStart] = useState(true);
+  const [castAtEnd, setCastAtEnd] = useState(false);
+
+  // More Like This entrance — reuse hook from Prompt 3
+  const [similarRef, similarVisible] = useIntersectionObserver<HTMLDivElement>();
+
+  // All data fetching unchanged
   const fetchDetails = useCallback(async () => {
     setLoading(true);
-    const res = await fetch(
-      `/api/tmdb?endpoint=/${mediaType}/${mediaId}&append_to_response=credits,similar,videos`
-    );
-    if (res.ok) {
-      const data = await res.json();
-      setDetails(data);
-    }
+    const res = await fetch(`/api/tmdb?endpoint=/${mediaType}/${mediaId}&append_to_response=credits,similar,videos`);
+    if (res.ok) setDetails(await res.json());
     setLoading(false);
   }, [mediaId, mediaType]);
 
@@ -73,24 +77,33 @@ export default function DetailModal({
     return () => { document.body.style.overflow = ""; };
   }, []);
 
+  // Cast scroll boundary tracking — reuses ContentRow pattern
+  function updateCastBounds() {
+    const el = castScrollRef.current;
+    if (!el) return;
+    setCastAtStart(el.scrollLeft <= 8);
+    setCastAtEnd(el.scrollLeft + el.clientWidth >= el.scrollWidth - 8);
+  }
+  useEffect(() => {
+    const el = castScrollRef.current;
+    if (!el) return;
+    updateCastBounds();
+    el.addEventListener("scroll", updateCastBounds, { passive: true });
+    return () => el.removeEventListener("scroll", updateCastBounds);
+  }, [details]);
+
+  function scrollCast(dir: "left" | "right") {
+    const el = castScrollRef.current;
+    if (!el) return;
+    el.scrollBy({ left: dir === "left" ? -200 : 200, behavior: "smooth" });
+  }
+
   async function toggleWatchlist() {
     if (!profileId || !details) return;
-    const action = inList ? "remove" : "add";
-    const body = {
-      profile_id: profileId,
-      media_id: mediaId,
-      media_type: mediaType,
-      title: getTitle(details),
-      poster_path: details.poster_path,
-    };
+    const body = { profile_id: profileId, media_id: mediaId, media_type: mediaType, title: getTitle(details), poster_path: details.poster_path };
     try {
-      if (action === "add") {
-        const { addToWatchlist } = await import("@/actions/watchlist");
-        await addToWatchlist(body);
-      } else {
-        const { removeFromWatchlist } = await import("@/actions/watchlist");
-        await removeFromWatchlist(profileId, mediaId, mediaType);
-      }
+      if (!inList) { const { addToWatchlist } = await import("@/actions/watchlist"); await addToWatchlist(body); }
+      else { const { removeFromWatchlist } = await import("@/actions/watchlist"); await removeFromWatchlist(profileId, mediaId, mediaType); }
       setInList(!inList);
     } catch { /* ignore */ }
   }
@@ -104,9 +117,7 @@ export default function DetailModal({
     } catch { /* ignore */ }
   }
 
-  const trailer = details?.videos?.results.find(
-    (v) => v.site === "YouTube" && v.type === "Trailer"
-  );
+  const trailer = details?.videos?.results.find((v) => v.site === "YouTube" && v.type === "Trailer");
 
   return (
     <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/80 p-4 pt-16 backdrop-blur-sm">
@@ -117,10 +128,9 @@ export default function DetailModal({
         transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
         className="relative w-full max-w-3xl rounded-2xl bg-card shadow-2xl overflow-hidden"
       >
-        {/* Close */}
         <button
           onClick={onClose}
-          className="absolute right-4 top-4 z-20 rounded-full bg-black/60 p-2 text-white hover:bg-black/90 transition-all duration-300 ease-in-out active:scale-95 backdrop-blur-sm"
+          className="absolute right-4 top-4 z-20 rounded-full bg-black/60 p-2 text-white hover:bg-black/90 transition-all duration-300 ease-in-out active:scale-95"
         >
           <X className="h-5 w-5" />
         </button>
@@ -131,59 +141,59 @@ export default function DetailModal({
           </div>
         ) : details ? (
           <>
-            {/* Hero */}
+            {/* Hero — Ken Burns + bottom gradient fade into card bg */}
             <div className="relative aspect-video w-full overflow-hidden rounded-t-2xl">
-              {/* Blurred backdrop */}
-              {details.backdrop_path && !trailer && (
-                <div className="absolute inset-0 scale-110 blur-sm">
-                  <Image
-                    src={getImageUrl(details.backdrop_path, "w780")}
-                    alt=""
-                    fill
-                    className="object-cover opacity-40"
-                  />
-                </div>
-              )}
               {trailer ? (
                 <iframe
                   src={`https://www.youtube.com/embed/${trailer.key}?autoplay=1&mute=1`}
-                  className="relative z-10 h-full w-full rounded-2xl"
+                  className="h-full w-full"
                   allow="autoplay; encrypted-media"
                   allowFullScreen
                 />
               ) : (
-                <Image
-                  src={getImageUrl(details.backdrop_path, "original")}
-                  alt={getTitle(details)}
-                  fill
-                  className="relative z-10 object-cover"
-                />
+                <>
+                  <Image
+                    src={getImageUrl(details.backdrop_path, "original")}
+                    alt={getTitle(details)}
+                    fill
+                    className="object-cover"
+                    style={{ animation: "kenBurns 12s ease-in-out forwards" }}
+                  />
+                  <style>{`@keyframes kenBurns { from { transform: scale(1); } to { transform: scale(1.04); } }`}</style>
+                </>
               )}
-              <div className="absolute inset-x-0 bottom-0 z-20 bg-gradient-to-t from-card via-card/60 to-transparent p-6">
-                <h2 className="text-2xl font-bold md:text-3xl drop-shadow-lg">{getTitle(details)}</h2>
+              {/* Bottom gradient bleeds into card bg — no hard edge */}
+              <div className="absolute inset-x-0 bottom-0 z-10" style={{ height: "60%", background: "linear-gradient(to top, var(--color-card, #141428) 20%, transparent)" }} />
+              {/* Staggered title entrance */}
+              <div className="absolute inset-x-0 bottom-0 z-20 p-6">
+                <motion.h2
+                  initial={{ opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3, ease: "easeOut", delay: 0.1 }}
+                  className="text-2xl font-bold md:text-3xl"
+                >
+                  {getTitle(details)}
+                </motion.h2>
               </div>
             </div>
 
             <div className="space-y-6 p-6">
               {/* Actions */}
               <div className="flex flex-wrap items-center gap-3">
-                {/* Play button with pulse */}
                 <motion.button
                   onClick={() => onPlay(details)}
-                  whileHover={{ scale: 1.05 }}
+                  whileHover={{ scale: 1.04 }}
                   whileTap={{ scale: 0.95 }}
-                  className="relative flex items-center gap-2 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 px-6 py-2.5 text-sm font-medium text-white shadow-lg overflow-hidden group"
+                  className="flex items-center gap-2 rounded-full bg-white px-6 py-2.5 text-sm font-semibold text-black hover:bg-white/90 transition-colors duration-200"
                 >
-                  <span className="absolute inset-0 rounded-full bg-white/20 opacity-0 group-hover:opacity-100 group-hover:animate-ping transition-opacity" />
-                  <Play className="h-4 w-4 fill-current relative z-10" />
-                  <span className="relative z-10">Play</span>
+                  <Play className="h-4 w-4 fill-current" />
+                  Play
                 </motion.button>
-
                 {profileId && (
                   <Button
                     variant="outline"
                     onClick={toggleWatchlist}
-                    className="gap-2 rounded-full border-white/20 bg-white/10 text-white hover:bg-white/20 backdrop-blur-sm"
+                    className="gap-2 rounded-full border-white/20 bg-transparent text-white hover:bg-white/10"
                   >
                     {inList ? <Check className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
                     {inList ? "In My List" : "My List"}
@@ -191,65 +201,70 @@ export default function DetailModal({
                 )}
               </div>
 
-              {/* Meta */}
-              <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
+              {/* Meta row — staggered entrance */}
+              <motion.div
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, ease: "easeOut", delay: 0.16 }}
+                className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground"
+              >
                 <span className="flex items-center gap-1">
                   <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
                   {formatRating(details.vote_average)}
                 </span>
-                <span className="flex items-center gap-1">
-                  <Calendar className="h-4 w-4" />
-                  {getYear(details)}
-                </span>
-                {details.runtime && (
-                  <span className="flex items-center gap-1">
-                    <Clock className="h-4 w-4" />
-                    {formatRuntime(details.runtime)}
-                  </span>
-                )}
+                <span className="flex items-center gap-1"><Calendar className="h-4 w-4" />{getYear(details)}</span>
+                {details.runtime && <span className="flex items-center gap-1"><Clock className="h-4 w-4" />{formatRuntime(details.runtime)}</span>}
                 {details.number_of_seasons && (
                   <span className="flex items-center gap-1">
                     <Film className="h-4 w-4" />
                     {details.number_of_seasons} Season{details.number_of_seasons > 1 ? "s" : ""}
                   </span>
                 )}
-              </div>
+              </motion.div>
 
               {details.tagline && (
                 <p className="text-sm italic text-muted-foreground">&ldquo;{details.tagline}&rdquo;</p>
               )}
 
-              <p className="text-sm leading-relaxed text-foreground/80">{details.overview}</p>
+              <motion.p
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, ease: "easeOut", delay: 0.22 }}
+                className="text-sm leading-relaxed text-foreground/80"
+              >
+                {details.overview}
+              </motion.p>
 
-              {/* Genre pills — colored */}
+              {/* Genre tags — clean muted labels, thin border, no color */}
               {details.genres && (
-                <div className="flex flex-wrap gap-2">
-                  {details.genres.map((genre, i) => (
+                <motion.div
+                  initial={{ opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3, ease: "easeOut", delay: 0.28 }}
+                  className="flex flex-wrap gap-2"
+                >
+                  {details.genres.map((genre) => (
                     <span
                       key={genre.id}
-                      className={`rounded-full border px-3 py-1 text-xs font-medium ${GENRE_COLORS[i % GENRE_COLORS.length]}`}
+                      className="rounded-full border border-border px-3 py-1 text-xs text-muted-foreground"
                     >
                       {genre.name}
                     </span>
                   ))}
-                </div>
+                </motion.div>
               )}
 
-              {/* Animated rating */}
+              {/* Rating */}
               {profileId && (
                 <div className="space-y-2">
-                  <p className="text-sm font-medium">Your Rating</p>
+                  <p className="text-sm font-medium text-muted-foreground">Your Rating</p>
                   <div className="flex gap-1">
                     {Array.from({ length: 10 }, (_, i) => i + 1).map((n) => (
                       <motion.button
                         key={n}
                         onClick={() => handleRate(n)}
                         whileTap={{ scale: 0.85 }}
-                        animate={{
-                          backgroundColor: userRating !== null && n <= userRating
-                            ? "rgb(124 58 237)"
-                            : "rgb(30 30 63)",
-                        }}
+                        animate={{ backgroundColor: userRating !== null && n <= userRating ? "rgb(124 58 237)" : "rgb(30 30 63)" }}
                         transition={{ duration: 0.2 }}
                         className="rounded-full px-2 py-1 text-xs text-white"
                       >
@@ -260,61 +275,87 @@ export default function DetailModal({
                 </div>
               )}
 
-              {/* Cast — circular with hover zoom */}
+              {/* Cast — scroll arrows reuse ContentRow pattern; hover scale 1.05; stagger entrance */}
               {details.credits?.cast && details.credits.cast.length > 0 && (
                 <div className="space-y-3">
-                  <h3 className="text-lg font-semibold">Cast</h3>
-                  <div className="flex gap-4 overflow-x-auto pb-2" style={{ scrollbarWidth: "none" }}>
-                    {details.credits.cast.slice(0, 10).map((member: CastMember) => (
-                      <motion.div
-                        key={member.id}
-                        whileHover={{ scale: 1.08 }}
-                        transition={{ duration: 0.2 }}
-                        className="flex-shrink-0 text-center cursor-default"
-                      >
-                        <div className="relative h-20 w-20 overflow-hidden rounded-full bg-muted ring-2 ring-white/10">
-                          {member.profile_path ? (
-                            <Image
-                              src={getImageUrl(member.profile_path, "w185")}
-                              alt={member.name}
-                              fill
-                              className="object-cover"
-                            />
-                          ) : (
-                            <div className="flex h-full items-center justify-center text-2xl text-muted-foreground bg-gradient-to-br from-purple-900 to-pink-900">
-                              {member.name.charAt(0)}
-                            </div>
-                          )}
+                  <AccentHeading>Cast</AccentHeading>
+                  <div className="relative group">
+                    <button
+                      onClick={() => scrollCast("left")}
+                      className="absolute -left-2 top-1/2 z-10 -translate-y-1/2 rounded-full bg-background/80 p-1.5 shadow-lg backdrop-blur transition-all duration-200 ease-out active:scale-95"
+                      style={{ opacity: castAtStart ? 0 : 1, pointerEvents: castAtStart ? "none" : "auto" }}
+                    >
+                      <ChevronLeft className="h-4 w-4" />
+                    </button>
+
+                    <div ref={castScrollRef} className="flex gap-4 overflow-x-auto pb-2" style={{ scrollbarWidth: "none" }}>
+                      {details.credits.cast.slice(0, 12).map((member: CastMember, i: number) => (
+                        <div
+                          key={member.id}
+                          className="flex-shrink-0 text-center cursor-default"
+                          style={{
+                            opacity: 1,
+                            animation: `castFade 250ms ease-out ${i * 40}ms both`,
+                          }}
+                        >
+                          <style>{`@keyframes castFade { from { opacity:0; transform:translateY(12px);} to { opacity:1; transform:translateY(0);} }`}</style>
+                          {/* Avatar: scale 1.05 on hover, clean shadow */}
+                          <div
+                            className="relative h-16 w-16 overflow-hidden rounded-full bg-muted transition-all duration-200 ease-out hover:scale-[1.05]"
+                            style={{ transitionProperty: "transform, box-shadow" }}
+                            onMouseEnter={e => (e.currentTarget.style.boxShadow = "0 6px 16px rgba(0,0,0,0.5)")}
+                            onMouseLeave={e => (e.currentTarget.style.boxShadow = "")}
+                          >
+                            {member.profile_path ? (
+                              <Image src={getImageUrl(member.profile_path, "w185")} alt={member.name} fill className="object-cover" />
+                            ) : (
+                              <div className="flex h-full items-center justify-center text-lg text-muted-foreground bg-secondary">
+                                {member.name.charAt(0)}
+                              </div>
+                            )}
+                          </div>
+                          <p className="mt-1 w-16 truncate text-xs font-medium">{member.name}</p>
+                          <p className="w-16 truncate text-[10px] text-muted-foreground">{member.character}</p>
                         </div>
-                        <p className="mt-1 w-20 truncate text-xs font-medium">{member.name}</p>
-                        <p className="w-20 truncate text-xs text-muted-foreground">{member.character}</p>
-                      </motion.div>
-                    ))}
+                      ))}
+                    </div>
+
+                    <button
+                      onClick={() => scrollCast("right")}
+                      className="absolute -right-2 top-1/2 z-10 -translate-y-1/2 rounded-full bg-background/80 p-1.5 shadow-lg backdrop-blur transition-all duration-200 ease-out active:scale-95"
+                      style={{ opacity: castAtEnd ? 0 : 1, pointerEvents: castAtEnd ? "none" : "auto" }}
+                    >
+                      <ChevronRight className="h-4 w-4" />
+                    </button>
                   </div>
                 </div>
               )}
 
-              {/* More Like This */}
+              {/* More Like This — IntersectionObserver entrance + accent heading */}
               {details.similar?.results && details.similar.results.length > 0 && (
-                <div className="space-y-3">
-                  <h3 className="text-lg font-semibold">More Like This</h3>
+                <div className="space-y-3" ref={similarRef}>
+                  <AccentHeading>More Like This</AccentHeading>
                   <div className="flex gap-3 overflow-x-auto pb-2" style={{ scrollbarWidth: "none" }}>
-                    {details.similar.results.slice(0, 10).map((item: MediaItem) => (
-                      <MediaCard
+                    {details.similar.results.slice(0, 10).map((item: MediaItem, i: number) => (
+                      <div
                         key={item.id}
-                        item={item}
-                        onClick={() => {
-                          onClose();
-                          setTimeout(() => {
-                            window.dispatchEvent(
-                              new CustomEvent("open-detail", {
-                                detail: { ...item, media_type: mediaType },
-                              })
-                            );
-                          }, 100);
+                        style={{
+                          opacity: similarVisible ? 1 : 0,
+                          transform: similarVisible ? "translateY(0)" : "translateY(24px)",
+                          transition: `opacity 250ms ease-out ${i * 40}ms, transform 250ms ease-out ${i * 40}ms`,
                         }}
-                        mediaType={mediaType}
-                      />
+                      >
+                        <MediaCard
+                          item={item}
+                          onClick={() => {
+                            onClose();
+                            setTimeout(() => {
+                              window.dispatchEvent(new CustomEvent("open-detail", { detail: { ...item, media_type: mediaType } }));
+                            }, 100);
+                          }}
+                          mediaType={mediaType}
+                        />
+                      </div>
                     ))}
                   </div>
                 </div>
@@ -322,9 +363,7 @@ export default function DetailModal({
             </div>
           </>
         ) : (
-          <div className="flex h-96 items-center justify-center text-muted-foreground">
-            Failed to load details
-          </div>
+          <div className="flex h-96 items-center justify-center text-muted-foreground">Failed to load details</div>
         )}
       </motion.div>
     </div>
