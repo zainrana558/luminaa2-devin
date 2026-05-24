@@ -7,6 +7,7 @@ import { Search, Bell, User, LogOut, LogIn, ChevronDown } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useNavScroll } from "@/hooks/useNavScroll";
 
 interface NavbarProps {
   isGuest?: boolean;
@@ -16,6 +17,7 @@ export default function Navbar({ isGuest = false }: NavbarProps) {
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [menuOpen, setMenuOpen] = useState(false);
+  const scrolled = useNavScroll();
   const router = useRouter();
 
   function handleSearch(e: React.FormEvent) {
@@ -35,7 +37,13 @@ export default function Navbar({ isGuest = false }: NavbarProps) {
   }
 
   return (
-    <nav className="fixed top-0 z-50 w-full bg-gradient-to-b from-background/95 to-transparent backdrop-blur-sm">
+    <nav
+      className="fixed top-0 z-50 w-full backdrop-blur-sm transition-all duration-300 ease-out"
+      style={{
+        background: scrolled ? "rgba(10,10,15,0.97)" : "linear-gradient(to bottom, rgba(10,10,15,0.95), transparent)",
+        borderBottom: scrolled ? "1px solid rgba(255,255,255,0.07)" : "1px solid transparent",
+      }}
+    >
       <div className="flex items-center justify-between px-4 py-3 md:px-8">
         <div className="flex items-center gap-8">
           <Link
