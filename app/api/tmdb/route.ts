@@ -1,25 +1,12 @@
 import { NextResponse, type NextRequest } from "next/server";
+import { ratelimit } from "@/lib/upstash";
 
 const TMDB_BASE = "https://api.themoviedb.org/3";
-const rateLimitMap = new Map<string, { count: number; reset: number }>();
-
-function checkRateLimit(ip: string): boolean {
-  const now = Date.now();
-  const entry = rateLimitMap.get(ip);
-  if (!entry || now > entry.reset) {
-    rateLimitMap.set(ip, { count: 1, reset: now + 60000 });
-    return true;
-  }
-  if (entry.count >= 60) return false;
-  entry.count++;
-  return true;
-}
 
 export async function GET(request: NextRequest) {
-  const ip = request.headers.get("x-forwarded-for") || "anonymous";
-  if (!checkRateLimit(ip)) {
-    return NextResponse.json({ error: "Rate limit exceeded" }, { status: 429 });
-  }
+  const ip = request.headers.get("x-forwarded-for") ?? "anonymous";
+  const { success } = await ratelimit.limit(ip);
+  if (!success) return new Response("Too Many Requests", { status: 429 });
 
   const { searchParams } = new URL(request.url);
   const endpoint = searchParams.get("endpoint");

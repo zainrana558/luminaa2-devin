@@ -21,13 +21,14 @@ interface TMDBListResponse<T> {
 }
 
 import type { MediaItem, MediaDetails, Episode } from "@/types";
+import { getCached } from "@/lib/cache";
 
 export async function getTrending(mediaType: "movie" | "tv" | "all" = "all", timeWindow: "day" | "week" = "week") {
-  return tmdbFetch<TMDBListResponse<MediaItem>>(`/trending/${mediaType}/${timeWindow}`);
+  return getCached(`tmdb:trending`, () => tmdbFetch<TMDBListResponse<MediaItem>>(`/trending/${mediaType}/${timeWindow}`), 3600);
 }
 
 export async function getPopular(mediaType: "movie" | "tv") {
-  return tmdbFetch<TMDBListResponse<MediaItem>>(`/${mediaType}/popular`);
+  return getCached(`tmdb:popular:${mediaType}`, () => tmdbFetch<TMDBListResponse<MediaItem>>(`/${mediaType}/popular`), 3600);
 }
 
 export async function getTopRated(mediaType: "movie" | "tv") {
