@@ -1,7 +1,7 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
-import { Play, Star } from "lucide-react";
 import { getImageUrl, getTitle, getYear, formatRating } from "@/lib/utils";
 import type { MediaItem } from "@/types";
 
@@ -12,36 +12,52 @@ interface MediaCardProps {
 }
 
 export default function MediaCard({ item, onClick, mediaType }: MediaCardProps) {
+  const [hovered, setHovered] = useState(false);
   const type = mediaType || item.media_type || (item.title ? "movie" : "tv");
 
   return (
     <button
       onClick={() => onClick({ ...item, media_type: type })}
-      className="group relative flex-shrink-0 w-36 md:w-44 overflow-hidden rounded-2xl transition-all duration-300 ease-in-out hover:scale-105 hover:z-10 active:scale-95"
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      className="relative flex-shrink-0 w-36 md:w-44 overflow-hidden rounded-xl active:scale-95 transition-all duration-200 ease-out"
+      style={{
+        transform: hovered ? "scale(1.04)" : "scale(1)",
+        boxShadow: hovered
+          ? "0 12px 32px rgba(0,0,0,0.6), 0 4px 12px rgba(0,0,0,0.4)"
+          : "0 2px 8px rgba(0,0,0,0.3)",
+        transition: "transform 200ms ease-out, box-shadow 200ms ease-out",
+        zIndex: hovered ? 10 : "auto",
+      }}
     >
-      <div className="relative aspect-[2/3] w-full overflow-hidden rounded-2xl bg-muted">
+      <div className="relative aspect-[2/3] w-full overflow-hidden rounded-xl bg-muted">
+        {/* Poster image with brightness on hover */}
         <Image
           src={getImageUrl(item.poster_path)}
           alt={getTitle(item)}
           fill
           className="object-cover"
           sizes="(max-width: 768px) 144px, 176px"
+          style={{
+            filter: hovered ? "brightness(1.08)" : "brightness(1)",
+            transition: "filter 200ms ease-out",
+          }}
         />
-        <div className="absolute inset-0 bg-black/0 transition-all duration-300 ease-in-out group-hover:bg-black/40" />
-        <div className="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity group-hover:opacity-100">
-          <div className="rounded-full bg-primary/90 p-3">
-            <Play className="h-6 w-6 fill-white text-white" />
-          </div>
-        </div>
-        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-2 opacity-0 transition-opacity group-hover:opacity-100">
-          <p className="truncate text-xs font-medium">{getTitle(item)}</p>
-          <div className="flex items-center gap-2 text-xs text-muted-foreground">
-            <span className="flex items-center gap-0.5">
-              <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
-              {formatRating(item.vote_average)}
-            </span>
-            <span>{getYear(item)}</span>
-          </div>
+
+        {/* Bottom info bar — slides up 40px on hover, solid dark bg */}
+        <div
+          className="absolute left-0 right-0 bottom-0 bg-zinc-900/95 px-2 py-2"
+          style={{
+            transform: hovered ? "translateY(0)" : "translateY(40px)",
+            transition: "transform 200ms ease-out",
+          }}
+        >
+          <p className="truncate text-xs font-medium text-white leading-tight">
+            {getTitle(item)}
+          </p>
+          <p className="text-[10px] text-white/60 mt-0.5">
+            {formatRating(item.vote_average)} · {getYear(item)}
+          </p>
         </div>
       </div>
     </button>
