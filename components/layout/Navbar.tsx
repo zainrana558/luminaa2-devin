@@ -60,6 +60,9 @@ export default function Navbar({ isGuest = false }: NavbarProps) {
             <Link href="/horror" className="text-sm text-muted-foreground hover:text-foreground transition-all duration-300 ease-in-out">
               Horror
             </Link>
+            <Link href="/cartoon" className="text-sm text-muted-foreground hover:text-foreground transition-all duration-300 ease-in-out">
+              Cartoon
+            </Link>
             {!isGuest && (
               <Link href="/my-list" className="text-sm text-muted-foreground hover:text-foreground transition-all duration-300 ease-in-out">
                 My List
