@@ -10,64 +10,76 @@ export default function AnimeCanvas() {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    let renderer: import("three").WebGLRenderer | null = null;
+    // Mobile CSS fallback — no Three.js
+    const isMobile = window.matchMedia("(max-width: 768px)").matches;
+    if (isMobile) return;
 
-    async function init() {
+    let disposed = false;
+
+    (async () => {
       try {
         const THREE = await import("three");
-        if (!canvas) return;
+        if (disposed || !canvas) return;
 
-        const dpr = Math.min(window.devicePixelRatio, 2);
-        const isMobile = (navigator.hardwareConcurrency ?? 4) < 4;
-        const petalCount = isMobile ? 60 : 120;
+        const width = canvas.clientWidth || window.innerWidth;
+        const height = canvas.clientHeight || window.innerHeight;
+        const cores = navigator.hardwareConcurrency ?? 4;
+        const petalCount = cores < 4 ? 60 : 120;
 
+        // ── Scene ────────────────────────────────────────────────
         const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(
-          60,
-          canvas.clientWidth / canvas.clientHeight,
-          0.1,
-          1000
-        );
-        camera.position.z = 28;
+        scene.fog = new THREE.FogExp2(0x0a0020, 0.02);
 
-        renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: !isMobile });
-        renderer.setPixelRatio(dpr);
-        renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+        const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
+        camera.position.set(0, 0, 5);
+
+        const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        renderer.setSize(width, height);
         renderer.setClearColor(0x000000, 0);
 
-        // Lights
-        const ambient = new THREE.AmbientLight(0xffb7c5, 0.7);
-        scene.add(ambient);
-        const dirLight = new THREE.DirectionalLight(0xffffff, 1.2);
-        dirLight.position.set(5, 10, 7);
+        // ── Lighting ─────────────────────────────────────────────
+        const ambientLight = new THREE.AmbientLight(0xff6b9d, 0.6);
+        scene.add(ambientLight);
+
+        const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
+        dirLight.position.set(5, 5, 5);
         scene.add(dirLight);
 
-        // ── Cherry Blossoms ──────────────────────────────────────
-        const petalColors = [0xffb7c5, 0xff8fa3, 0xffc0cb, 0xffaabb, 0xf48fb1];
+        const pointLight = new THREE.PointLight(0xff9ec4, 1, 20);
+        pointLight.position.set(0, 2, 3);
+        scene.add(pointLight);
+
+        // ── Cherry Blossoms ───────────────────────────────────────
+        const petalGeo = new THREE.PlaneGeometry(0.15, 0.1);
+        const petalMat = new THREE.MeshStandardMaterial({
+          color: 0xff9ec4,
+          side: THREE.DoubleSide,
+          transparent: true,
+          opacity: 0.85,
+        });
+
         type Petal = {
           mesh: import("three").Mesh;
+          velocityY: number;
+          velocityX: number;
+          rotSpeedX: number;
+          rotSpeedY: number;
+          rotSpeedZ: number;
           phase: number;
-          vx: number;
-          vy: number;
-          targetRx: number;
-          targetRy: number;
-          targetRz: number;
+          amplitude: number;
         };
+
         const petals: Petal[] = [];
 
         for (let i = 0; i < petalCount; i++) {
-          const geo = new THREE.PlaneGeometry(0.3, 0.3);
-          const mat = new THREE.MeshStandardMaterial({
-            color: petalColors[i % petalColors.length],
-            side: THREE.DoubleSide,
-            transparent: true,
-            opacity: 0.5 + Math.random() * 0.4,
-          });
-          const mesh = new THREE.Mesh(geo, mat);
+          const mat = petalMat.clone();
+          mat.opacity = 0.6 + Math.random() * 0.35;
+          const mesh = new THREE.Mesh(petalGeo, mat);
           mesh.position.set(
-            (Math.random() - 0.5) * 55,
-            (Math.random() - 0.5) * 38 + 18,
-            (Math.random() - 0.5) * 15
+            (Math.random() - 0.5) * 16,   // x: -8 to 8
+            5 + Math.random() * 10,        // y: 5 to 15
+            -5 + Math.random() * 7         // z: -5 to 2
           );
           mesh.rotation.set(
             Math.random() * Math.PI,
@@ -77,140 +89,135 @@ export default function AnimeCanvas() {
           scene.add(mesh);
           petals.push({
             mesh,
+            velocityY: -(0.008 + Math.random() * 0.012),
+            velocityX: (Math.random() - 0.5) * 0.01,
+            rotSpeedX: (Math.random() - 0.5) * 0.02,
+            rotSpeedY: (Math.random() - 0.5) * 0.015,
+            rotSpeedZ: (Math.random() - 0.5) * 0.01,
             phase: Math.random() * Math.PI * 2,
-            vx: (Math.random() - 0.5) * 0.03,
-            vy: -(0.03 + Math.random() * 0.05),
-            targetRx: Math.random() * Math.PI * 2,
-            targetRy: Math.random() * Math.PI * 2,
-            targetRz: Math.random() * Math.PI * 2,
+            amplitude: 0.02 + Math.random() * 0.03,
           });
         }
 
-        // ── Samurai Silhouette ───────────────────────────────────
-        const darkMat = new THREE.MeshStandardMaterial({ color: 0x1a1a2e });
+        // ── Samurai ───────────────────────────────────────────────
+        const bodyMat = new THREE.MeshStandardMaterial({
+          color: 0x1a0010,
+          transparent: true,
+          opacity: 0.4,
+        });
+        const swordMat = new THREE.MeshStandardMaterial({
+          color: 0xc0c0c0,
+          metalness: 0.9,
+          roughness: 0.1,
+          transparent: true,
+          opacity: 0.4,
+        });
+        const guardMat = new THREE.MeshStandardMaterial({
+          color: 0xffd700,
+          transparent: true,
+          opacity: 0.4,
+        });
+        const headMat = new THREE.MeshStandardMaterial({
+          color: 0x1a0010,
+          transparent: true,
+          opacity: 0.4,
+        });
+
         const samuraiGroup = new THREE.Group();
-        samuraiGroup.position.set(-14, -6, -5);
 
-        // body parts
-        const torso = new THREE.Mesh(new THREE.BoxGeometry(1.6, 2.2, 0.5), darkMat);
-        torso.position.y = 1.1;
-        samuraiGroup.add(torso);
+        const body = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.8, 0.1), bodyMat);
+        body.position.y = 0;
+        samuraiGroup.add(body);
 
-        const head = new THREE.Mesh(new THREE.BoxGeometry(1.1, 1.1, 0.5), darkMat);
-        head.position.y = 2.8;
+        const head = new THREE.Mesh(new THREE.SphereGeometry(0.2, 8, 8), headMat);
+        head.position.y = 0.6;
         samuraiGroup.add(head);
 
-        const leftArm = new THREE.Mesh(new THREE.BoxGeometry(0.45, 1.8, 0.4), darkMat);
-        leftArm.position.set(-1.05, 1.3, 0);
-        leftArm.rotation.z = 0.25;
-        samuraiGroup.add(leftArm);
+        const sword = new THREE.Mesh(new THREE.BoxGeometry(0.05, 1.2, 0.05), swordMat);
+        sword.rotation.z = Math.PI / 4; // 45 degrees
+        sword.position.set(0.4, 0.2, 0);
+        samuraiGroup.add(sword);
 
-        const rightArm = new THREE.Mesh(new THREE.BoxGeometry(0.45, 1.8, 0.4), darkMat);
-        rightArm.position.set(1.05, 1.5, 0);
-        rightArm.rotation.z = -0.6;
-        samuraiGroup.add(rightArm);
+        const swordGuard = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.05, 0.05), guardMat);
+        swordGuard.rotation.z = Math.PI / 4;
+        swordGuard.position.set(0.15, -0.15, 0);
+        samuraiGroup.add(swordGuard);
 
-        const leftLeg = new THREE.Mesh(new THREE.BoxGeometry(0.65, 2.0, 0.45), darkMat);
-        leftLeg.position.set(-0.45, -0.8, 0);
-        samuraiGroup.add(leftLeg);
-
-        const rightLeg = new THREE.Mesh(new THREE.BoxGeometry(0.65, 2.0, 0.45), darkMat);
-        rightLeg.position.set(0.45, -0.8, 0);
-        samuraiGroup.add(rightLeg);
-
+        samuraiGroup.position.set(2, -1, 0);
+        samuraiGroup.scale.setScalar(1.5);
         scene.add(samuraiGroup);
 
-        // ── Sword Slash ──────────────────────────────────────────
-        function makeSlashLine(opacity: number): import("three").LineSegments {
-          const points = [
-            new THREE.Vector3(-2, 3, 0),
-            new THREE.Vector3(3, -1, 0),
+        // ── Sword Slash ───────────────────────────────────────────
+        function makeSlash(offsetX: number) {
+          const pts = [
+            new THREE.Vector3(-3, 2, 1),
+            new THREE.Vector3(1, -1, 1),
           ];
-          const geo = new THREE.BufferGeometry().setFromPoints(points);
+          const geo = new THREE.BufferGeometry().setFromPoints(pts);
           const mat = new THREE.LineBasicMaterial({
-            color: 0xffd700,
+            color: 0xffffff,
             transparent: true,
-            opacity,
+            opacity: 0,
           });
-          return new THREE.LineSegments(geo, mat);
+          const line = new THREE.Line(geo, mat);
+          line.position.x = offsetX;
+          return line;
         }
 
-        const slash1 = makeSlashLine(0);
-        const slash2 = makeSlashLine(0);
-        const slash3 = makeSlashLine(0);
-        slash2.position.x = 0.15;
-        slash3.position.x = 0.3;
-        const slashGroup = new THREE.Group();
-        slashGroup.position.set(-12, -3, -4);
-        slashGroup.add(slash1, slash2, slash3);
-        scene.add(slashGroup);
+        const slash1 = makeSlash(0);
+        const slash2 = makeSlash(0.1);
+        const slash3 = makeSlash(0.2);
+        scene.add(slash1, slash2, slash3);
 
-        // Slash timing
-        let slashTime = 0;
-        const SLASH_PERIOD = 4.0; // repeat every 4s
-        const SLASH_DURATION = 1.5;
-
-        // ── Animate ──────────────────────────────────────────────
+        // ── Animation ─────────────────────────────────────────────
         let time = 0;
-        const samuraiBaseY = samuraiGroup.position.y;
+        let slashTimer = 0;
 
         function animate() {
+          if (disposed) return;
           rafRef.current = requestAnimationFrame(animate);
-          time += 0.016;
-          slashTime += 0.016;
+          time += 0.01;
+          slashTimer += 0.01;
 
           // Camera idle float
-          camera.position.y = Math.sin(time * 0.5) * 0.1;
+          camera.position.y = Math.sin(time * 0.3) * 0.2;
+          camera.position.x = Math.sin(time * 0.2) * 0.1;
 
-          // Petals: lerp fall with sin wave sway
+          // Petals
           for (const p of petals) {
-            const target = new THREE.Vector3(
-              p.mesh.position.x + p.vx + Math.sin(time + p.phase) * 0.008,
-              p.mesh.position.y + p.vy + Math.sin(time + p.phase) * 0.003,
-              p.mesh.position.z
-            );
-            p.mesh.position.lerp(target, 0.05);
-
-            // Lerp rotation
-            p.mesh.rotation.x += (p.targetRx - p.mesh.rotation.x) * 0.05;
-            p.mesh.rotation.y += (p.targetRy - p.mesh.rotation.y) * 0.05;
-            p.mesh.rotation.z += (p.targetRz - p.mesh.rotation.z) * 0.05;
-
-            // Slow drift of targets
-            p.targetRx += 0.008;
-            p.targetRy += 0.005;
-            p.targetRz += 0.003;
-
-            // Reset when fallen off
-            if (p.mesh.position.y < -20) {
-              p.mesh.position.y = 20;
-              p.mesh.position.x = (Math.random() - 0.5) * 55;
+            p.mesh.position.y += p.velocityY;
+            p.mesh.position.x += Math.sin(time + p.phase) * p.amplitude;
+            p.mesh.rotation.x += 0.01;
+            p.mesh.rotation.z += 0.005;
+            if (p.mesh.position.y < -8) {
+              p.mesh.position.y = 10;
+              p.mesh.position.x = (Math.random() - 0.5) * 16;
             }
           }
 
-          // Samurai idle breathing — sin wave scale lerp
-          const breathScale = 1 + Math.sin(time * 1.2) * 0.015;
-          torso.scale.y += (breathScale - torso.scale.y) * 0.05;
-          samuraiGroup.position.y += (samuraiBaseY + Math.sin(time * 1.2) * 0.03 - samuraiGroup.position.y) * 0.05;
+          // Samurai breathing
+          samuraiGroup.scale.y = 1.5 + Math.sin(time * 0.8) * 0.02;
 
-          // Sword slash: opacity lerp 0->1->0 over 1.5s, every 4s
-          const slashPhase = slashTime % SLASH_PERIOD;
-          let slashOpacity = 0;
-          if (slashPhase < SLASH_DURATION) {
-            const t = slashPhase / SLASH_DURATION;
-            slashOpacity = t < 0.3 ? t / 0.3 : (1 - t) / 0.7;
+          // Sword slash: 4s cycle, staggered 0.1s
+          const cyclePos = slashTimer % 4;
+          function slashOpacity(stagger: number) {
+            const c = cyclePos - stagger;
+            if (c < 0) return 0;
+            if (c < 0.5) return c * 2;
+            if (c < 1.0) return 1 - (c - 0.5) * 2;
+            return 0;
           }
-          (slash1.material as import("three").LineBasicMaterial).opacity += (slashOpacity - (slash1.material as import("three").LineBasicMaterial).opacity) * 0.15;
-          (slash2.material as import("three").LineBasicMaterial).opacity += (slashOpacity * 0.6 - (slash2.material as import("three").LineBasicMaterial).opacity) * 0.12;
-          (slash3.material as import("three").LineBasicMaterial).opacity += (slashOpacity * 0.3 - (slash3.material as import("three").LineBasicMaterial).opacity) * 0.1;
+          (slash1.material as import("three").LineBasicMaterial).opacity = slashOpacity(0);
+          (slash2.material as import("three").LineBasicMaterial).opacity = slashOpacity(0.1);
+          (slash3.material as import("three").LineBasicMaterial).opacity = slashOpacity(0.2);
 
-          renderer!.render(scene, camera);
+          renderer.render(scene, camera);
         }
 
         animate();
 
         function onResize() {
-          if (!renderer || !canvas) return;
+          if (disposed || !canvas) return;
           const w = canvas.clientWidth;
           const h = canvas.clientHeight;
           camera.aspect = w / h;
@@ -218,18 +225,22 @@ export default function AnimeCanvas() {
           renderer.setSize(w, h);
         }
         window.addEventListener("resize", onResize);
-        return () => window.removeEventListener("resize", onResize);
-      } catch {
-        // WebGL failed — fallback gradient shows via CSS
-      }
-    }
 
-    const cleanupPromise = init();
+        (canvas as HTMLCanvasElement & { _cleanup?: () => void })._cleanup = () => {
+          window.removeEventListener("resize", onResize);
+          renderer.dispose();
+          scene.clear();
+        };
+      } catch {
+        // WebGL failed — CSS fallback renders via sibling div
+      }
+    })();
 
     return () => {
+      disposed = true;
       cancelAnimationFrame(rafRef.current);
-      renderer?.dispose();
-      cleanupPromise?.then((fn) => fn?.());
+      const c = canvas as HTMLCanvasElement & { _cleanup?: () => void };
+      c._cleanup?.();
     };
   }, []);
 
