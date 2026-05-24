@@ -100,3 +100,19 @@ export async function getAnimeTrending() {
     with_original_language: "ja",
   });
 }
+
+export async function getAnime() {
+  const [movies, tv] = await Promise.all([
+    tmdbFetch<TMDBListResponse<MediaItem>>("/discover/movie", {
+      with_genres: "16",
+      with_original_language: "ja",
+      sort_by: "popularity.desc",
+    }),
+    tmdbFetch<TMDBListResponse<MediaItem>>("/discover/tv", {
+      with_genres: "16",
+      with_original_language: "ja",
+      sort_by: "popularity.desc",
+    }),
+  ]);
+  return { movies: movies.results, tv: tv.results };
+}
