@@ -1,6 +1,8 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { getAllEmbedUrls } from "@/lib/streaming/providers";
 
+export const maxDuration = 9;
+
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const tmdbId = searchParams.get("tmdb");

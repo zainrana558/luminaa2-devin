@@ -1,6 +1,8 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { searchMedia } from "@/lib/tmdb/client";
 
+export const maxDuration = 9;
+
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const query = searchParams.get("q");

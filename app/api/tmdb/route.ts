@@ -1,6 +1,8 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { ratelimit } from "@/lib/upstash";
 
+export const maxDuration = 9;
+
 const TMDB_BASE = "https://api.themoviedb.org/3";
 
 export async function GET(request: NextRequest) {
