@@ -191,8 +191,24 @@ export default function AnimePageClient({ movies, tv }: AnimePageClientProps) {
   const [activeGenre, setActiveGenre] = useState("");
   const [selectedItem, setSelectedItem] = useState<MediaItem | null>(null);
   const [playingItem, setPlayingItem] = useState<MediaItem | null>(null);
+  const [episode, setEpisode] = useState(1);
+  const [streamUrl, setStreamUrl] = useState<string | null>(null);
+  const [streamSource, setStreamSource] = useState<string | null>(null);
+  const [streamLoading, setStreamLoading] = useState(false);
 
   const hero = tv[0] ?? movies[0];
+
+  async function loadStream(ep: number) {
+    if (!hero) return;
+    setStreamLoading(true);
+    const title = getTitle(hero);
+    const data = await fetch(
+      `/api/anime/stream?title=${encodeURIComponent(title)}&episode=${ep}`
+    ).then(r => r.json()).catch(() => null);
+    setStreamUrl(data?.url ?? null);
+    setStreamSource(data?.source ?? "embed");
+    setStreamLoading(false);
+  }
 
   // Filter items by genre_ids when a subgenre is active
   function filterItems(items: MediaItem[]) {
@@ -298,6 +314,25 @@ export default function AnimePageClient({ movies, tv }: AnimePageClientProps) {
             {/* Hero card */}
             {hero && <HeroCard item={hero} onPlay={handlePlay} />}
 
+            {/* Episode selector + stream source indicator */}
+            <div className="px-4 md:px-8 space-y-3">
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="text-xs text-pink-300/70 uppercase tracking-widest">Episode</span>
+                {streamSource === "consumet" && <span className="rounded-full bg-green-900/40 border border-green-500/30 px-3 py-0.5 text-xs text-green-300">HD Stream</span>}
+                {streamSource === "aniwatch"  && <span className="rounded-full bg-yellow-900/40 border border-yellow-500/30 px-3 py-0.5 text-xs text-yellow-300">Stream</span>}
+                {streamSource === "embed"     && <span className="rounded-full bg-zinc-800/60 border border-zinc-600/30 px-3 py-0.5 text-xs text-zinc-400">Embed</span>}
+                {streamLoading                && <span className="rounded-full bg-pink-900/30 px-3 py-0.5 text-xs text-pink-300 animate-pulse">Loading…</span>}
+              </div>
+              <div className="flex gap-2 overflow-x-auto pb-1" style={{ scrollbarWidth: "none" }}>
+                {Array.from({ length: 24 }, (_, i) => i + 1).map(ep => (
+                  <button key={ep} onClick={() => { setEpisode(ep); loadStream(ep); }}
+                    className="flex-shrink-0 rounded-full px-3 py-1.5 text-xs font-medium transition-all duration-300 active:scale-95 min-w-[36px] min-h-[36px]"
+                    style={{ touchAction: "manipulation", background: episode === ep ? "linear-gradient(135deg,#e91e8c,#c44dff)" : "rgba(255,183,197,0.1)", color: episode === ep ? "#fff" : "#ffb7c5", border: `1px solid ${episode === ep ? "transparent" : "rgba(255,183,197,0.2)"}` }}
+                  >{ep}</button>
+                ))}
+              </div>
+            </div>
+
             {/* Content rows using existing ContentRow component */}
             <Suspense fallback={<SkeletonRow />}>
               {tvFiltered.length > 0 && (
@@ -355,6 +390,7 @@ export default function AnimePageClient({ movies, tv }: AnimePageClientProps) {
             item={playingItem}
             onClose={() => setPlayingItem(null)}
             profileId={null}
+            initialEpisode={episode}
           />
         )}
       </div>
