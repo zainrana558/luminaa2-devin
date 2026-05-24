@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, Suspense, Component } from "react";
+import { useState, useEffect, Component, Suspense } from "react";
 import type { ReactNode } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
@@ -158,6 +158,29 @@ function HeroCard({ item, onPlay }: { item: MediaItem; onPlay: (i: MediaItem) =>
   );
 }
 
+// ── Enriched Metadata (max 20 lines added) ───────────────────────────────────
+function AnimeMetadata({ item }: { item: MediaItem | undefined }) {
+  const [animeData, setAnimeData] = useState<Record<string, unknown> | null>(null);
+  useEffect(() => {
+    if (!item) return;
+    const title = getTitle(item);
+    fetch(`/api/anime/metadata?tmdbId=${item.id}&title=${encodeURIComponent(title)}`)
+      .then(r => r.json()).then(setAnimeData).catch(() => null);
+  }, [item]);
+  if (!animeData) return null;
+  const studios = (animeData.studios as { nodes?: { name: string }[] } | undefined)?.nodes;
+  return (
+    <div className="px-4 md:px-8">
+      <div className="flex flex-wrap gap-2 rounded-2xl border border-pink-500/20 bg-pink-950/20 p-4 text-xs text-pink-200 backdrop-blur-sm">
+        {animeData.episodes != null && <span className="rounded-full bg-pink-900/30 px-3 py-1">Episodes: {String(animeData.episodes)}</span>}
+        {animeData.averageScore != null && <span className="rounded-full bg-pink-900/30 px-3 py-1">Score: {String(animeData.averageScore)}/100</span>}
+        {studios?.map(s => <span key={s.name} className="rounded-full bg-purple-900/30 px-3 py-1">{s.name}</span>)}
+        {animeData.status != null && <span className="rounded-full bg-pink-900/30 px-3 py-1">{String(animeData.status)}</span>}
+      </div>
+    </div>
+  );
+}
+
 // ── Main Client Component ─────────────────────────────────────────────────────
 interface AnimePageClientProps {
   movies: MediaItem[];
@@ -307,6 +330,9 @@ export default function AnimePageClient({ movies, tv }: AnimePageClientProps) {
                 />
               )}
             </Suspense>
+
+            {/* Enriched metadata — only shown if API returns data */}
+            <AnimeMetadata item={hero} />
 
           </div>
         </div>
