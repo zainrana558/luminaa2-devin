@@ -76,18 +76,27 @@ export async function getByGenre(mediaType: "movie" | "tv", genreId: number) {
   });
 }
 
-export async function getAnime() {
-  const [movies, tv] = await Promise.all([
-    tmdbFetch<TMDBListResponse<MediaItem>>("/discover/movie", {
-      with_genres: "16",
-      with_original_language: "ja",
-      sort_by: "popularity.desc",
-    }),
-    tmdbFetch<TMDBListResponse<MediaItem>>("/discover/tv", {
-      with_genres: "16",
-      with_original_language: "ja",
-      sort_by: "popularity.desc",
-    }),
-  ]);
-  return { movies: movies.results, tv: tv.results };
+// Anime: genre 16 (Animation) + Japanese language
+export async function getAnimePopular() {
+  return tmdbFetch<TMDBListResponse<MediaItem>>("/discover/tv", {
+    with_genres: "16",
+    with_original_language: "ja",
+    sort_by: "popularity.desc",
+  });
+}
+
+export async function getAnimeTopRated() {
+  return tmdbFetch<TMDBListResponse<MediaItem>>("/discover/tv", {
+    with_genres: "16",
+    with_original_language: "ja",
+    sort_by: "vote_average.desc",
+    "vote_count.gte": "200",
+  });
+}
+
+export async function getAnimeTrending() {
+  return tmdbFetch<TMDBListResponse<MediaItem>>("/trending/tv/week", {
+    with_genres: "16",
+    with_original_language: "ja",
+  });
 }
