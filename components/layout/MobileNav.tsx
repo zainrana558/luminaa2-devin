@@ -2,13 +2,14 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Film, Tv, Heart, Search, LogIn } from "lucide-react";
+import { Home, Film, Tv, Heart, Search, LogIn, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const allLinks = [
   { href: "/browse", icon: Home, label: "Home", guestVisible: true },
   { href: "/movies", icon: Film, label: "Movies", guestVisible: true },
   { href: "/tv", icon: Tv, label: "TV", guestVisible: true },
+  { href: "/anime", icon: Sparkles, label: "Anime", guestVisible: true },
   { href: "/search", icon: Search, label: "Search", guestVisible: true },
   { href: "/my-list", icon: Heart, label: "My List", guestVisible: false },
 ];
