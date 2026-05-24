@@ -160,12 +160,11 @@ export default function SciFiCanvas() {
       grid.position.y = -3;
       grid.rotation.x = Math.PI / 3;
 
-      // Make grid semi-transparent — cast via any to avoid namespace ref
+      // Make grid semi-transparent
       const gridMats = Array.isArray(grid.material) ? grid.material : [grid.material];
       for (const m of gridMats) {
         m.transparent = true;
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (m as any).opacity = 0.4;
+        (m as { opacity: number }).opacity = 0.4;
       }
       scene.add(grid);
 
@@ -192,8 +191,7 @@ export default function SciFiCanvas() {
         cyanLight.intensity = 0.8 + Math.sin(time * 2) * 0.4;
 
         // ── Star twinkle — update opacity attribute ───────────────────
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const opacAttr = starGeo.attributes.opacity as any;
+        const opacAttr = starGeo.attributes.opacity as { array: Float32Array; needsUpdate: boolean };
         for (let i = 0; i < STAR_COUNT; i++) {
           opacAttr.array[i] = 0.3 + Math.sin(time * starSpeeds[i] + starPhases[i]) * 0.5;
         }
