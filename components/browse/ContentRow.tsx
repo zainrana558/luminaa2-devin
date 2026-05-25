@@ -51,11 +51,12 @@ export default function ContentRow({ title, items, onItemClick, mediaType }: Con
   if (!items.length) return null;
 
   return (
-    <div className="space-y-2 px-4 md:px-8" style={{ paddingBottom: "64px" }}>
+    <div style={{ paddingBottom: "64px", paddingLeft: "clamp(16px, 3vw, 48px)", paddingRight: "clamp(16px, 3vw, 48px)" }}>
       <style>{`
-        .content-row-cards > div { flex: 0 0 calc(50% - 10px); width: calc(50% - 10px); }
-        @media (min-width: 768px)  { .content-row-cards > div { flex: 0 0 calc(25% - 15px); width: calc(25% - 15px); } }
-        @media (min-width: 1280px) { .content-row-cards > div { flex: 0 0 calc(20% - 16px); width: calc(20% - 16px); } }
+        .content-row-cards > div { flex: 0 0 calc(50% - 10px); width: calc(50% - 10px); min-width: 180px; flex-shrink: 0; }
+        @media (min-width: 768px)  { .content-row-cards > div { flex: 0 0 calc(25% - 12px); width: calc(25% - 12px); min-width: 180px; } }
+        @media (min-width: 1280px) { .content-row-cards > div { flex: 0 0 calc(20% - 13px); width: calc(20% - 13px); min-width: 180px; } }
+        .content-row-cards::-webkit-scrollbar { display: none; }
       `}</style>
       {/* Heading: fade + translateX(-16px)→0, 4px left accent bar */}
       <div
@@ -105,7 +106,7 @@ export default function ContentRow({ title, items, onItemClick, mediaType }: Con
         <div
           ref={scrollRef}
           className="content-row-cards flex overflow-x-auto scroll-smooth pb-2"
-          style={{ scrollbarWidth: "none", msOverflowStyle: "none", gap: "20px" }}
+          style={{ scrollbarWidth: "none", msOverflowStyle: "none", gap: "16px" }}
         >
           {items.map((item, i) => (
             <div
@@ -114,6 +115,8 @@ export default function ContentRow({ title, items, onItemClick, mediaType }: Con
                 opacity: rowVisible ? 1 : 0,
                 transform: rowVisible ? "translateY(0)" : "translateY(24px)",
                 transition: `opacity 250ms ease-out ${i * 40}ms, transform 250ms ease-out ${i * 40}ms`,
+                flexShrink: 0,
+                marginRight: i === items.length - 1 ? "48px" : undefined,
               }}
             >
               <MediaCard
