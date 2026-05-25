@@ -38,53 +38,56 @@ export default function Navbar({ isGuest = false }: NavbarProps) {
 
   return (
     <nav
-      className="fixed top-0 z-50 w-full backdrop-blur-sm transition-all duration-300 ease-out"
+      className="fixed top-0 w-full transition-all duration-300 ease-out"
       style={{
-        background: scrolled ? "rgba(10,10,15,0.97)" : "linear-gradient(to bottom, rgba(10,10,15,0.95), transparent)",
-        borderBottom: scrolled ? "1px solid rgba(255,255,255,0.07)" : "1px solid transparent",
+        height: "64px",
+        zIndex: 1000,
+        background: scrolled ? "rgba(13,13,13,0.98)" : "#0d0d0d",
+        borderBottom: scrolled ? "1px solid rgba(255,255,255,0.07)" : "1px solid rgba(255,255,255,0.04)",
       }}
     >
-      <div className="flex items-center justify-between px-4 py-3 md:px-8">
+      <div className="flex h-full items-center justify-between" style={{ padding: "0 48px" }}>
         <div className="flex items-center gap-8">
           <Link
             href="/browse"
-            className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent"
+            className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent"
+            style={{ fontSize: "1.5rem", fontWeight: 800, lineHeight: 1 }}
           >
             Lumina
           </Link>
-          <div className="hidden items-center gap-6 md:flex">
-            <Link href="/browse" className="text-sm text-muted-foreground hover:text-foreground transition-all duration-300 ease-in-out">
+          <div className="hidden items-center md:flex" style={{ gap: "32px" }}>
+            <Link href="/browse" className="text-muted-foreground hover:text-foreground transition-all duration-300 ease-in-out" style={{ fontSize: "0.9rem", fontWeight: 500 }}>
               Home
             </Link>
-            <Link href="/movies" className="text-sm text-muted-foreground hover:text-foreground transition-all duration-300 ease-in-out">
+            <Link href="/movies" className="text-muted-foreground hover:text-foreground transition-all duration-300 ease-in-out" style={{ fontSize: "0.9rem", fontWeight: 500 }}>
               Movies
             </Link>
-            <Link href="/tv" className="text-sm text-muted-foreground hover:text-foreground transition-all duration-300 ease-in-out">
+            <Link href="/tv" className="text-muted-foreground hover:text-foreground transition-all duration-300 ease-in-out" style={{ fontSize: "0.9rem", fontWeight: 500 }}>
               TV Shows
             </Link>
-            <Link href="/anime" className="text-sm text-muted-foreground hover:text-foreground transition-all duration-300 ease-in-out">
+            <Link href="/anime" className="text-muted-foreground hover:text-foreground transition-all duration-300 ease-in-out" style={{ fontSize: "0.9rem", fontWeight: 500 }}>
               Anime
             </Link>
-            <Link href="/horror" className="text-sm text-muted-foreground hover:text-foreground transition-all duration-300 ease-in-out">
+            <Link href="/horror" className="text-muted-foreground hover:text-foreground transition-all duration-300 ease-in-out" style={{ fontSize: "0.9rem", fontWeight: 500 }}>
               Horror
             </Link>
-            <Link href="/comedy" className="text-sm text-muted-foreground hover:text-foreground transition-all duration-300 ease-in-out">
+            <Link href="/comedy" className="text-muted-foreground hover:text-foreground transition-all duration-300 ease-in-out" style={{ fontSize: "0.9rem", fontWeight: 500 }}>
               Comedy
             </Link>
-            <Link href="/action" className="text-sm text-muted-foreground hover:text-foreground transition-all duration-300 ease-in-out">
+            <Link href="/action" className="text-muted-foreground hover:text-foreground transition-all duration-300 ease-in-out" style={{ fontSize: "0.9rem", fontWeight: 500 }}>
               Action
             </Link>
-            <Link href="/cartoon" className="text-sm text-muted-foreground hover:text-foreground transition-all duration-300 ease-in-out">
+            <Link href="/cartoon" className="text-muted-foreground hover:text-foreground transition-all duration-300 ease-in-out" style={{ fontSize: "0.9rem", fontWeight: 500 }}>
               Cartoon
             </Link>
-            <Link href="/romance" className="text-sm text-muted-foreground hover:text-foreground transition-all duration-300 ease-in-out">
+            <Link href="/romance" className="text-muted-foreground hover:text-foreground transition-all duration-300 ease-in-out" style={{ fontSize: "0.9rem", fontWeight: 500 }}>
               Romance
             </Link>
-            <Link href="/scifi" className="text-sm text-muted-foreground hover:text-foreground transition-all duration-300 ease-in-out">
+            <Link href="/scifi" className="text-muted-foreground hover:text-foreground transition-all duration-300 ease-in-out" style={{ fontSize: "0.9rem", fontWeight: 500 }}>
               Sci-Fi
             </Link>
             {!isGuest && (
-              <Link href="/my-list" className="text-sm text-muted-foreground hover:text-foreground transition-all duration-300 ease-in-out">
+              <Link href="/my-list" className="text-muted-foreground hover:text-foreground transition-all duration-300 ease-in-out" style={{ fontSize: "0.9rem", fontWeight: 500 }}>
                 My List
               </Link>
             )}

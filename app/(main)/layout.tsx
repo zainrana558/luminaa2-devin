@@ -12,10 +12,12 @@ export default async function MainLayout({
   const { data: { user } } = await supabase.auth.getUser();
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen" style={{ background: "#0d0d0d" }}>
       <Navbar isGuest={!user} />
       <main className="pb-20 pt-16 md:pb-0">
-        <PageTransition>{children}</PageTransition>
+        <div style={{ maxWidth: "1400px", margin: "0 auto", paddingLeft: "clamp(16px, 4vw, 48px)", paddingRight: "clamp(16px, 4vw, 48px)" }}>
+          <PageTransition>{children}</PageTransition>
+        </div>
       </main>
       <MobileNav isGuest={!user} />
     </div>
