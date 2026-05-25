@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import { Play, Plus, Star } from "lucide-react";
+import { motion } from "framer-motion";
 import { getImageUrl, getTitle, getYear, formatRating } from "@/lib/utils";
 import type { MediaItem } from "@/types";
 
@@ -16,27 +18,30 @@ export default function MediaCard({ item, onClick, mediaType }: MediaCardProps) 
   const type = mediaType || item.media_type || (item.title ? "movie" : "tv");
 
   return (
-    <button
+    <motion.button
       onClick={() => onClick({ ...item, media_type: type })}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      className="relative overflow-hidden active:scale-95 transition-all duration-200 ease-out"
+      onHoverStart={() => setHovered(true)}
+      onHoverEnd={() => setHovered(false)}
+      animate={{
+        scale: hovered ? 1.06 : 1,
+        y: hovered ? -4 : 0,
+      }}
+      transition={{ type: "spring", stiffness: 340, damping: 24 }}
+      className="relative overflow-hidden text-left focus:outline-none"
       style={{
-        borderRadius: "10px",
-        background: "#1a1a1a",
-        border: "none",
-        width: "100%",
-        flexShrink: 0,
-        transform: hovered ? "scale(1.04)" : "scale(1)",
+        borderRadius: "12px",
+        background: "var(--color-card)",
+        border: `1px solid ${hovered ? "rgba(var(--theme-accent-rgb), 0.35)" : "transparent"}`,
         boxShadow: hovered
-          ? "0 12px 32px rgba(0,0,0,0.6), 0 4px 12px rgba(0,0,0,0.4)"
-          : "0 2px 8px rgba(0,0,0,0.3)",
-        transition: "transform 200ms ease-out, box-shadow 200ms ease-out",
+          ? `0 16px 40px rgba(0,0,0,0.7), 0 0 0 1px rgba(var(--theme-accent-rgb),0.18), 0 8px 16px rgba(var(--theme-accent-rgb),0.12)`
+          : "0 2px 12px rgba(0,0,0,0.4)",
+        transition: "border-color 0.25s ease, box-shadow 0.25s ease",
+        width: "100%",
         zIndex: hovered ? 10 : "auto",
       }}
     >
-      <div className="relative aspect-[2/3] w-full overflow-hidden" style={{ borderRadius: "10px" }}>
-        {/* Poster image with brightness on hover */}
+      {/* Poster */}
+      <div className="relative aspect-[2/3] w-full overflow-hidden" style={{ borderRadius: "12px 12px 0 0" }}>
         <Image
           src={getImageUrl(item.poster_path)}
           alt={getTitle(item)}
@@ -44,28 +49,60 @@ export default function MediaCard({ item, onClick, mediaType }: MediaCardProps) 
           className="object-cover"
           sizes="(max-width: 767px) calc(50vw - 28px), (max-width: 1279px) calc(25vw - 24px), calc(20vw - 24px)"
           style={{
-            display: "block",
-            filter: hovered ? "brightness(1.08)" : "brightness(1)",
-            transition: "filter 200ms ease-out",
+            filter: hovered ? "brightness(0.75)" : "brightness(1)",
+            transition: "filter 0.25s ease",
           }}
         />
 
-        {/* Bottom info bar — slides up 40px on hover, solid dark bg */}
+        {/* Play button overlay */}
+        <motion.div
+          animate={{ opacity: hovered ? 1 : 0, scale: hovered ? 1 : 0.7 }}
+          transition={{ duration: 0.2 }}
+          className="absolute inset-0 flex items-center justify-center"
+        >
+          <div
+            className="flex h-12 w-12 items-center justify-center rounded-full shadow-lg"
+            style={{
+              background: "var(--color-primary)",
+              boxShadow: `0 0 20px rgba(var(--theme-accent-rgb), 0.6)`,
+            }}
+          >
+            <Play className="h-5 w-5 fill-current" style={{ color: "var(--color-primary-foreground)" }} />
+          </div>
+        </motion.div>
+
+        {/* Top-right: rating badge */}
         <div
-          className="absolute left-0 right-0 bottom-0 bg-zinc-900/95 px-2 py-2"
+          className="absolute left-2 top-2 flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold"
           style={{
-            transform: hovered ? "translateY(0)" : "translateY(40px)",
-            transition: "transform 200ms ease-out",
+            background: "rgba(0,0,0,0.7)",
+            backdropFilter: "blur(8px)",
+            color: "var(--color-primary)",
           }}
         >
-          <p className="truncate text-xs font-medium text-white leading-tight">
-            {getTitle(item)}
-          </p>
-          <p className="text-[10px] text-white/60 mt-0.5">
-            {formatRating(item.vote_average)} · {getYear(item)}
-          </p>
+          <Star className="h-2.5 w-2.5 fill-current" />
+          {formatRating(item.vote_average)}
         </div>
       </div>
-    </button>
+
+      {/* Info bar */}
+      <div
+        className="px-2.5 py-2 space-y-0.5"
+        style={{ borderRadius: "0 0 12px 12px" }}
+      >
+        <p
+          className="truncate text-xs font-semibold leading-tight"
+          style={{ color: "var(--color-card-foreground)" }}
+        >
+          {getTitle(item)}
+        </p>
+        <p
+          className="text-[10px]"
+          style={{ color: "var(--color-muted-foreground)" }}
+        >
+          {getYear(item)} · {type === "movie" ? "Movie" : "TV"}
+        </p>
+      </div>
+    </motion.button>
   );
 }

@@ -1,35 +1,253 @@
 @import "tailwindcss";
 
-@theme {
-  --color-background: #0d0d0d;
-  --color-foreground: #cccccc;
-  --color-muted: #1a1a2e;
-  --color-muted-foreground: #a1a1aa;
-  --color-card: #141428;
-  --color-card-foreground: #ededed;
-  --color-border: #27274a;
-  --color-input: #27274a;
-  --color-ring: #7c3aed;
-  --color-primary: #7c3aed;
-  --color-primary-foreground: #ffffff;
-  --color-secondary: #1e1e3f;
-  --color-secondary-foreground: #ededed;
-  --color-accent: #7c3aed;
-  --color-destructive: #ef4444;
-  --color-destructive-foreground: #ffffff;
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+/* ─────────────────────────────────────────────────────────────────────────────
+   LUMINAA2 — CINEMATIC THEME SYSTEM
+   7 themes via [data-theme] on <html>. CSS variables consumed by Tailwind.
+   Default: no data-theme = dark base (cinematic neutral).
+───────────────────────────────────────────────────────────────────────────── */
+
+/* ── Base / Dark Default ───────────────────────────────────────────────────── */
+:root,
+[data-theme="cinematic"] {
+  --color-background:        #0c0a08;
+  --color-foreground:        #e8e0d0;
+  --color-muted:             #1c1810;
+  --color-muted-foreground:  #9e9080;
+  --color-card:              #161210;
+  --color-card-foreground:   #e8e0d0;
+  --color-border:            #2c2418;
+  --color-input:             #2c2418;
+  --color-ring:              #c9a84c;
+  --color-primary:           #c9a84c;
+  --color-primary-foreground:#0c0a08;
+  --color-secondary:         #241e14;
+  --color-secondary-foreground:#e8e0d0;
+  --color-accent:            #c9a84c;
+  --color-destructive:       #ef4444;
+  --color-destructive-foreground:#ffffff;
+
+  /* Theme-specific extras */
+  --theme-glow:              rgba(201,168,76,0.35);
+  --theme-hero-gradient:     linear-gradient(135deg,#0c0a08 0%,#1a1408 60%,#0c0a08 100%);
+  --theme-card-border:       rgba(201,168,76,0.15);
+  --theme-particle-color:    "201,168,76";
+  --theme-accent-rgb:        201,168,76;
+  --theme-font-display:      "Playfair Display", "Georgia", serif;
+  --theme-text-shadow:       0 2px 12px rgba(201,168,76,0.3);
+  --theme-logo-from:         #c9a84c;
+  --theme-logo-to:           #f0d080;
 }
 
-* {
+/* ── Action ───────────────────────────────────────────────────────────────── */
+[data-theme="action"] {
+  --color-background:        #0a0a08;
+  --color-foreground:        #f5f0e8;
+  --color-muted:             #1a1508;
+  --color-muted-foreground:  #a09070;
+  --color-card:              #141208;
+  --color-card-foreground:   #f5f0e8;
+  --color-border:            #2a2010;
+  --color-input:             #2a2010;
+  --color-ring:              #f59e0b;
+  --color-primary:           #f59e0b;
+  --color-primary-foreground:#0a0a08;
+  --color-secondary:         #201c10;
+  --color-secondary-foreground:#f5f0e8;
+  --color-accent:            #ef6c00;
+
+  --theme-glow:              rgba(245,158,11,0.45);
+  --theme-hero-gradient:     linear-gradient(135deg,#0a0a08 0%,#1a1008 60%,#0a0a08 100%);
+  --theme-card-border:       rgba(245,158,11,0.2);
+  --theme-particle-color:    "245,158,11";
+  --theme-accent-rgb:        245,158,11;
+  --theme-font-display:      "Oswald", "Impact", "Arial Black", sans-serif;
+  --theme-text-shadow:       0 0 20px rgba(245,158,11,0.5), 0 2px 8px rgba(0,0,0,0.8);
+  --theme-logo-from:         #f59e0b;
+  --theme-logo-to:           #ef6c00;
+}
+
+/* ── Romance ──────────────────────────────────────────────────────────────── */
+[data-theme="romance"] {
+  --color-background:        #0f080c;
+  --color-foreground:        #f5e8ef;
+  --color-muted:             #1f1018;
+  --color-muted-foreground:  #b08898;
+  --color-card:              #190e14;
+  --color-card-foreground:   #f5e8ef;
+  --color-border:            #301828;
+  --color-input:             #301828;
+  --color-ring:              #f06292;
+  --color-primary:           #f06292;
+  --color-primary-foreground:#0f080c;
+  --color-secondary:         #261220;
+  --color-secondary-foreground:#f5e8ef;
+  --color-accent:            #c2185b;
+
+  --theme-glow:              rgba(240,98,146,0.4);
+  --theme-hero-gradient:     linear-gradient(135deg,#0f080c 0%,#1a0c14 60%,#0f080c 100%);
+  --theme-card-border:       rgba(240,98,146,0.18);
+  --theme-particle-color:    "240,98,146";
+  --theme-accent-rgb:        240,98,146;
+  --theme-font-display:      "Cormorant Garamond", "Palatino Linotype", serif;
+  --theme-text-shadow:       0 2px 16px rgba(240,98,146,0.4);
+  --theme-logo-from:         #f06292;
+  --theme-logo-to:           #ad1457;
+}
+
+/* ── Anime ────────────────────────────────────────────────────────────────── */
+[data-theme="anime"] {
+  --color-background:        #080814;
+  --color-foreground:        #e8f0ff;
+  --color-muted:             #10102a;
+  --color-muted-foreground:  #8090c0;
+  --color-card:              #0c0c20;
+  --color-card-foreground:   #e8f0ff;
+  --color-border:            #1c2040;
+  --color-input:             #1c2040;
+  --color-ring:              #00e5ff;
+  --color-primary:           #00e5ff;
+  --color-primary-foreground:#080814;
+  --color-secondary:         #161630;
+  --color-secondary-foreground:#e8f0ff;
+  --color-accent:            #e040fb;
+
+  --theme-glow:              rgba(0,229,255,0.45);
+  --theme-hero-gradient:     linear-gradient(135deg,#080814 0%,#0c1028 60%,#080814 100%);
+  --theme-card-border:       rgba(0,229,255,0.2);
+  --theme-particle-color:    "0,229,255";
+  --theme-accent-rgb:        0,229,255;
+  --theme-font-display:      "Rajdhani", "Noto Sans JP", "Arial", sans-serif;
+  --theme-text-shadow:       0 0 20px rgba(0,229,255,0.6), 0 0 40px rgba(224,64,251,0.3);
+  --theme-logo-from:         #00e5ff;
+  --theme-logo-to:           #e040fb;
+}
+
+/* ── Cartoon ──────────────────────────────────────────────────────────────── */
+[data-theme="cartoon"] {
+  --color-background:        #0a0c18;
+  --color-foreground:        #f0f4ff;
+  --color-muted:             #12162e;
+  --color-muted-foreground:  #8090b8;
+  --color-card:              #0e1224;
+  --color-card-foreground:   #f0f4ff;
+  --color-border:            #202848;
+  --color-input:             #202848;
+  --color-ring:              #7c4dff;
+  --color-primary:           #7c4dff;
+  --color-primary-foreground:#ffffff;
+  --color-secondary:         #181c38;
+  --color-secondary-foreground:#f0f4ff;
+  --color-accent:            #ff6d00;
+
+  --theme-glow:              rgba(124,77,255,0.4);
+  --theme-hero-gradient:     linear-gradient(135deg,#0a0c18 0%,#10122a 60%,#0a0c18 100%);
+  --theme-card-border:       rgba(124,77,255,0.2);
+  --theme-particle-color:    "124,77,255";
+  --theme-accent-rgb:        124,77,255;
+  --theme-font-display:      "Nunito", "Fredoka One", "Comic Sans MS", cursive, sans-serif;
+  --theme-text-shadow:       0 2px 12px rgba(124,77,255,0.4);
+  --theme-logo-from:         #7c4dff;
+  --theme-logo-to:           #ff6d00;
+}
+
+/* ── Sci-Fi ───────────────────────────────────────────────────────────────── */
+[data-theme="scifi"] {
+  --color-background:        #000a08;
+  --color-foreground:        #c0ffd8;
+  --color-muted:             #001208;
+  --color-muted-foreground:  #406050;
+  --color-card:              #001410;
+  --color-card-foreground:   #c0ffd8;
+  --color-border:            #003020;
+  --color-input:             #003020;
+  --color-ring:              #00ff88;
+  --color-primary:           #00ff88;
+  --color-primary-foreground:#000a08;
+  --color-secondary:         #001c14;
+  --color-secondary-foreground:#c0ffd8;
+  --color-accent:            #40c4ff;
+
+  --theme-glow:              rgba(0,255,136,0.5);
+  --theme-hero-gradient:     linear-gradient(135deg,#000a08 0%,#001510 60%,#000a08 100%);
+  --theme-card-border:       rgba(0,255,136,0.2);
+  --theme-particle-color:    "0,255,136";
+  --theme-accent-rgb:        0,255,136;
+  --theme-font-display:      "Share Tech Mono", "Courier New", monospace;
+  --theme-text-shadow:       0 0 16px rgba(0,255,136,0.7), 0 0 32px rgba(64,196,255,0.3);
+  --theme-logo-from:         #00ff88;
+  --theme-logo-to:           #40c4ff;
+}
+
+/* ── Horror ───────────────────────────────────────────────────────────────── */
+[data-theme="horror"] {
+  --color-background:        #040204;
+  --color-foreground:        #d4c8c8;
+  --color-muted:             #0c060c;
+  --color-muted-foreground:  #704040;
+  --color-card:              #080408;
+  --color-card-foreground:   #d4c8c8;
+  --color-border:            #200818;
+  --color-input:             #200818;
+  --color-ring:              #cc0022;
+  --color-primary:           #cc0022;
+  --color-primary-foreground:#040204;
+  --color-secondary:         #140610;
+  --color-secondary-foreground:#d4c8c8;
+  --color-accent:            #4a7c00;
+
+  --theme-glow:              rgba(204,0,34,0.5);
+  --theme-hero-gradient:     linear-gradient(135deg,#040204 0%,#0a040a 60%,#040204 100%);
+  --theme-card-border:       rgba(204,0,34,0.2);
+  --theme-particle-color:    "204,0,34";
+  --theme-accent-rgb:        204,0,34;
+  --theme-font-display:      "Creepster", "Permanent Marker", cursive, system-ui;
+  --theme-text-shadow:       0 0 20px rgba(204,0,34,0.7), 0 0 40px rgba(100,0,0,0.5), 0 4px 16px rgba(0,0,0,0.9);
+  --theme-logo-from:         #cc0022;
+  --theme-logo-to:           #880000;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   TAILWIND @theme registration
+───────────────────────────────────────────────────────────────────────────── */
+@theme {
+  --color-background:        var(--color-background);
+  --color-foreground:        var(--color-foreground);
+  --color-muted:             var(--color-muted);
+  --color-muted-foreground:  var(--color-muted-foreground);
+  --color-card:              var(--color-card);
+  --color-card-foreground:   var(--color-card-foreground);
+  --color-border:            var(--color-border);
+  --color-input:             var(--color-input);
+  --color-ring:              var(--color-ring);
+  --color-primary:           var(--color-primary);
+  --color-primary-foreground:var(--color-primary-foreground);
+  --color-secondary:         var(--color-secondary);
+  --color-secondary-foreground:var(--color-secondary-foreground);
+  --color-accent:            var(--color-accent);
+  --color-destructive:       var(--color-destructive);
+  --color-destructive-foreground:var(--color-destructive-foreground);
+
+  --font-sans:    "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--theme-font-display, "Inter", sans-serif);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   GLOBAL RESET & SCROLLBARS
+───────────────────────────────────────────────────────────────────────────── */
+*,
+*::before,
+*::after {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
   scrollbar-width: thin;
-  scrollbar-color: #2a2a2a transparent;
+  scrollbar-color: rgba(var(--theme-accent-rgb), 0.3) transparent;
 }
 
 html {
   color-scheme: dark;
+  background: var(--color-background);
+  transition: background 0.5s ease, color 0.5s ease;
 }
 
 body {
@@ -38,25 +256,13 @@ body {
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  transition: background 0.5s ease, color 0.5s ease;
 }
 
-::-webkit-scrollbar {
-  width: 4px;
-  height: 4px;
-}
-
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #2a2a2a;
-  border-radius: 99px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #444;
-}
+::-webkit-scrollbar         { width: 4px; height: 4px; }
+::-webkit-scrollbar-track   { background: transparent; }
+::-webkit-scrollbar-thumb   { background: rgba(var(--theme-accent-rgb), 0.3); border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(var(--theme-accent-rgb), 0.55); }
 
 *:focus-visible {
   outline: none;
@@ -68,3 +274,119 @@ button:active,
 [role="button"]:active {
   transform: scale(0.95);
 }
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   THEME TRANSITION — smooth token swaps
+───────────────────────────────────────────────────────────────────────────── */
+.theme-transition,
+.theme-transition * {
+  transition:
+    background-color 0.45s ease,
+    border-color 0.45s ease,
+    color 0.35s ease,
+    box-shadow 0.45s ease !important;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   HORROR THEME — Glitch & Drip keyframes
+───────────────────────────────────────────────────────────────────────────── */
+@keyframes glitch {
+  0%,100% { clip-path: none; transform: none; }
+  5%       { clip-path: inset(40% 0 40% 0); transform: translate(-4px, 2px); }
+  10%      { clip-path: inset(20% 0 60% 0); transform: translate(4px, -2px); }
+  15%      { clip-path: none; transform: none; }
+  80%      { clip-path: none; transform: none; }
+  85%      { clip-path: inset(60% 0 20% 0); transform: translate(-2px, 3px); }
+  90%      { clip-path: none; transform: none; }
+}
+
+@keyframes drip {
+  0%   { transform: scaleY(0) translateY(0); opacity: 1; }
+  70%  { transform: scaleY(1) translateY(0); opacity: 1; }
+  100% { transform: scaleY(1) translateY(20px); opacity: 0; }
+}
+
+@keyframes flicker {
+  0%,100% { opacity: 1; }
+  4%      { opacity: 0.85; }
+  8%      { opacity: 1; }
+  15%     { opacity: 0.9; }
+  19%     { opacity: 1; }
+  60%     { opacity: 1; }
+  65%     { opacity: 0.88; }
+  70%     { opacity: 1; }
+}
+
+@keyframes redPulse {
+  0%,100% { box-shadow: 0 0 20px rgba(204,0,34,0.3), inset 0 0 20px rgba(204,0,34,0.1); }
+  50%     { box-shadow: 0 0 40px rgba(204,0,34,0.6), inset 0 0 40px rgba(204,0,34,0.2); }
+}
+
+@keyframes scanline {
+  0%   { background-position: 0 0; }
+  100% { background-position: 0 100vh; }
+}
+
+/* Horror glitch on data-theme="horror" headings */
+[data-theme="horror"] .horror-glitch {
+  animation: glitch 6s infinite;
+  position: relative;
+}
+
+[data-theme="horror"] .horror-flicker {
+  animation: flicker 4s infinite;
+}
+
+[data-theme="horror"] .horror-glow {
+  animation: redPulse 3s ease-in-out infinite;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   MAGNETIC BUTTON — pure CSS assist (JS handles the transform)
+───────────────────────────────────────────────────────────────────────────── */
+.magnetic-btn {
+  transition: transform 0.25s cubic-bezier(0.22,1,0.36,1), box-shadow 0.25s ease;
+  will-change: transform;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   CINEMATIC VIGNETTE helper
+───────────────────────────────────────────────────────────────────────────── */
+.vignette::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.75) 100%);
+  pointer-events: none;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   NO SCROLLBAR UTILITY
+───────────────────────────────────────────────────────────────────────────── */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   AMBIENT GLOW BACKDROP (video player)
+───────────────────────────────────────────────────────────────────────────── */
+.ambient-glow {
+  position: absolute;
+  inset: -20%;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.25;
+  background: radial-gradient(circle, rgba(var(--theme-accent-rgb), 0.8) 0%, transparent 70%);
+  pointer-events: none;
+  animation: ambientPulse 5s ease-in-out infinite;
+}
+
+@keyframes ambientPulse {
+  0%,100% { transform: scale(1);    opacity: 0.2; }
+  50%     { transform: scale(1.08); opacity: 0.35; }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   HIDE HORIZONTAL SCROLLBAR for content rows
+───────────────────────────────────────────────────────────────────────────── */
+.hide-scrollbar { scrollbar-width: none; }
+.hide-scrollbar::-webkit-scrollbar { display: none; }

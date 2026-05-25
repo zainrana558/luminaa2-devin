@@ -9,16 +9,28 @@ export default async function MainLayout({
   children: React.ReactNode;
 }) {
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   return (
-    <div className="min-h-screen" style={{ background: "#0d0d0d" }}>
+    <div className="min-h-screen" style={{ background: "var(--color-background)" }}>
       <Navbar isGuest={!user} />
+
       <main className="pb-20 pt-16 md:pb-0">
-        <div style={{ maxWidth: "1400px", margin: "0 auto", paddingLeft: "clamp(16px, 4vw, 48px)", paddingRight: "clamp(16px, 4vw, 48px)" }}>
+        {/* Constrained inner content — hero banners opt out via negative margins */}
+        <div
+          style={{
+            maxWidth: "1400px",
+            margin: "0 auto",
+            paddingLeft:  "clamp(16px, 4vw, 48px)",
+            paddingRight: "clamp(16px, 4vw, 48px)",
+          }}
+        >
           <PageTransition>{children}</PageTransition>
         </div>
       </main>
+
       <MobileNav isGuest={!user} />
     </div>
   );

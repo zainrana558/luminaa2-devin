@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, Suspense, Component } from "react";
+import { ThemeApplier } from "@/components/ui/ThemeApplier";
 import type { ReactNode } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
@@ -297,6 +298,7 @@ export default function CartoonPageClient({
 
   return (
     <ErrorBoundary fallback={<ErrorFallback />}>
+      <ThemeApplier theme="cartoon" />
       <div
         className="relative min-h-screen overflow-x-hidden"
         style={{

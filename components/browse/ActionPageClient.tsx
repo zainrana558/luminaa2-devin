@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, Component, Suspense } from "react";
+import { ThemeApplier } from "@/components/ui/ThemeApplier";
 import type { ReactNode } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
@@ -197,6 +198,7 @@ export default function ActionPageClient({ movies, tv }: ActionPageClientProps) 
 
   return (
     <ErrorBoundary fallback={<ErrFallback />}>
+      <ThemeApplier theme="action" />
       <div className="relative min-h-screen overflow-x-hidden"
         style={{ background: "linear-gradient(160deg,#050200 0%,#1a0800 40%,#050200 100%)" }}>
 

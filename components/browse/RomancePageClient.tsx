@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, Component, Suspense } from "react";
+import { ThemeApplier } from "@/components/ui/ThemeApplier";
 import type { ReactNode } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
@@ -193,6 +194,7 @@ export default function RomancePageClient({ movies, tv }: RomancePageClientProps
 
   return (
     <ErrorBoundary fallback={<ErrFallback />}>
+      <ThemeApplier theme="romance" />
       <div className="relative min-h-screen overflow-x-hidden"
         style={{ background: "linear-gradient(160deg,#1a0010 0%,#2d0a1f 40%,#1a0010 100%)" }}>
 

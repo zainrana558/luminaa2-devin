@@ -16,14 +16,11 @@ interface ContentRowProps {
 export default function ContentRow({ title, items, onItemClick, mediaType }: ContentRowProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [atStart, setAtStart] = useState(true);
-  const [atEnd, setAtEnd] = useState(false);
+  const [atEnd,   setAtEnd]   = useState(false);
 
-  // Section entrance — heading fade + translateX(-16px)→0
   const [headingRef, headingVisible] = useIntersectionObserver<HTMLDivElement>();
-  // Cards entrance
-  const [rowRef, rowVisible] = useIntersectionObserver<HTMLDivElement>();
+  const [rowRef, rowVisible]         = useIntersectionObserver<HTMLDivElement>();
 
-  // Track scroll boundaries to show/hide arrows
   function updateBoundaries() {
     const el = scrollRef.current;
     if (!el) return;
@@ -39,38 +36,34 @@ export default function ContentRow({ title, items, onItemClick, mediaType }: Con
     return () => el.removeEventListener("scroll", updateBoundaries);
   }, [items]);
 
-  function scroll(direction: "left" | "right") {
+  function scroll(dir: "left" | "right") {
     if (!scrollRef.current) return;
     const amount = scrollRef.current.clientWidth * 0.75;
-    scrollRef.current.scrollBy({
-      left: direction === "left" ? -amount : amount,
-      behavior: "smooth",
-    });
+    scrollRef.current.scrollBy({ left: dir === "left" ? -amount : amount, behavior: "smooth" });
   }
 
   if (!items.length) return null;
 
   return (
-    <div style={{ paddingBottom: "64px", paddingLeft: "clamp(16px, 3vw, 48px)", paddingRight: "clamp(16px, 3vw, 48px)" }}>
-      <style>{`
-        .content-row-cards > div { flex: 0 0 calc(50% - 10px); width: calc(50% - 10px); min-width: 180px; flex-shrink: 0; }
-        @media (min-width: 768px)  { .content-row-cards > div { flex: 0 0 calc(25% - 12px); width: calc(25% - 12px); min-width: 180px; } }
-        @media (min-width: 1280px) { .content-row-cards > div { flex: 0 0 calc(20% - 13px); width: calc(20% - 13px); min-width: 180px; } }
-        .content-row-cards::-webkit-scrollbar { display: none; }
-      `}</style>
-      {/* Heading: fade + translateX(-16px)→0, 4px left accent bar */}
+    <div
+      style={{
+        paddingBottom: "52px",
+        paddingLeft: "clamp(16px, 3vw, 48px)",
+        paddingRight: "clamp(16px, 3vw, 48px)",
+      }}
+    >
+      {/* Section heading with animated accent bar */}
       <div
         ref={headingRef}
         style={{
           opacity: headingVisible ? 1 : 0,
           transform: headingVisible ? "translateX(0)" : "translateX(-16px)",
-          transition: "opacity 280ms ease-out, transform 280ms ease-out",
+          transition: "opacity 320ms ease-out, transform 320ms ease-out",
           paddingLeft: "14px",
           position: "relative",
           marginBottom: "20px",
         }}
       >
-        {/* 4px left accent bar — gradient per spec */}
         <span
           aria-hidden
           style={{
@@ -80,65 +73,81 @@ export default function ContentRow({ title, items, onItemClick, mediaType }: Con
             bottom: 0,
             width: "4px",
             borderRadius: "2px",
-            background: "linear-gradient(to bottom, #7c3aed, #ec4899)",
+            background: "linear-gradient(to bottom, var(--color-primary), var(--color-accent))",
             opacity: headingVisible ? 1 : 0,
-            transition: "opacity 280ms ease-out 80ms",
+            transition: "opacity 320ms ease-out 100ms",
           }}
         />
-        <h2 style={{ fontSize: "clamp(1.1rem, 2vw, 1.35rem)", fontWeight: 700, color: "#ffffff" }}>{title}</h2>
+        <h2
+          style={{
+            fontSize: "clamp(1.05rem, 2vw, 1.3rem)",
+            fontWeight: 700,
+            color: "var(--color-foreground)",
+            letterSpacing: "0.01em",
+          }}
+        >
+          {title}
+        </h2>
       </div>
 
       <div className="group relative" ref={rowRef}>
-        {/* Left arrow — hidden at scroll start */}
+        {/* ── Responsive card sizing ── */}
+        <style>{`
+          .c-row-cards { display: flex; overflow-x: auto; gap: 14px; scroll-snap-type: x mandatory; scrollbar-width: none; }
+          .c-row-cards::-webkit-scrollbar { display: none; }
+          .c-row-cards > div { flex: 0 0 calc(50% - 10px); scroll-snap-align: start; }
+          @media (min-width: 640px)  { .c-row-cards > div { flex: 0 0 calc(33.33% - 10px); } }
+          @media (min-width: 768px)  { .c-row-cards > div { flex: 0 0 calc(25%    - 12px); } }
+          @media (min-width: 1024px) { .c-row-cards > div { flex: 0 0 calc(20%    - 12px); } }
+          @media (min-width: 1280px) { .c-row-cards > div { flex: 0 0 calc(16.66% - 12px); } }
+        `}</style>
+
+        {/* Left arrow */}
         <button
           onClick={() => scroll("left")}
-          className="absolute -left-2 top-1/2 z-10 -translate-y-1/2 rounded-full bg-background/80 p-2 shadow-lg backdrop-blur transition-all duration-300 ease-in-out active:scale-95"
+          className="absolute -left-3 top-1/2 z-10 -translate-y-1/2 rounded-full p-2 shadow-lg backdrop-blur-sm transition-all duration-200 hover:scale-110 active:scale-90"
           style={{
-            opacity: atStart ? 0 : undefined,
+            background: "rgba(0,0,0,0.7)",
+            border: "1px solid rgba(var(--theme-accent-rgb),0.2)",
+            color: "var(--color-foreground)",
+            opacity: atStart ? 0 : 1,
             pointerEvents: atStart ? "none" : "auto",
           }}
           aria-hidden={atStart}
         >
-          <ChevronLeft className="h-5 w-5" />
+          <ChevronLeft className="h-4 w-4" />
         </button>
 
-        {/* Cards with stagger entrance */}
-        <div
-          ref={scrollRef}
-          className="content-row-cards flex overflow-x-auto scroll-smooth pb-2"
-          style={{ scrollbarWidth: "none", msOverflowStyle: "none", gap: "16px" }}
-        >
+        <div ref={scrollRef} className="c-row-cards pb-2">
           {items.map((item, i) => (
             <div
               key={item.id}
               style={{
                 opacity: rowVisible ? 1 : 0,
-                transform: rowVisible ? "translateY(0)" : "translateY(24px)",
-                transition: `opacity 250ms ease-out ${i * 40}ms, transform 250ms ease-out ${i * 40}ms`,
+                transform: rowVisible ? "translateY(0)" : "translateY(20px)",
+                transition: `opacity 280ms ease-out ${i * 35}ms, transform 280ms ease-out ${i * 35}ms`,
                 flexShrink: 0,
-                marginRight: i === items.length - 1 ? "48px" : undefined,
               }}
             >
-              <MediaCard
-                item={item}
-                onClick={onItemClick}
-                mediaType={mediaType}
-              />
+              <MediaCard item={item} onClick={onItemClick} mediaType={mediaType} />
             </div>
           ))}
         </div>
 
-        {/* Right arrow — hidden at scroll end */}
+        {/* Right arrow */}
         <button
           onClick={() => scroll("right")}
-          className="absolute -right-2 top-1/2 z-10 -translate-y-1/2 rounded-full bg-background/80 p-2 shadow-lg backdrop-blur transition-all duration-300 ease-in-out active:scale-95"
+          className="absolute -right-3 top-1/2 z-10 -translate-y-1/2 rounded-full p-2 shadow-lg backdrop-blur-sm transition-all duration-200 hover:scale-110 active:scale-90"
           style={{
-            opacity: atEnd ? 0 : undefined,
+            background: "rgba(0,0,0,0.7)",
+            border: "1px solid rgba(var(--theme-accent-rgb),0.2)",
+            color: "var(--color-foreground)",
+            opacity: atEnd ? 0 : 1,
             pointerEvents: atEnd ? "none" : "auto",
           }}
           aria-hidden={atEnd}
         >
-          <ChevronRight className="h-5 w-5" />
+          <ChevronRight className="h-4 w-4" />
         </button>
       </div>
     </div>

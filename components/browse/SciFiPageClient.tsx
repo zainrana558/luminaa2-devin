@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, Suspense, Component } from "react";
+import { ThemeApplier } from "@/components/ui/ThemeApplier";
 import type { ReactNode } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
@@ -294,6 +295,7 @@ export default function SciFiPageClient({ movies, tv }: SciFiPageClientProps) {
 
   return (
     <ErrorBoundary fallback={<ErrorFallback />}>
+      <ThemeApplier theme="scifi" />
       <div
         className="relative min-h-screen overflow-x-hidden"
         style={{ background: "linear-gradient(180deg,#000814 0%,#001428 50%,#000814 100%)" }}

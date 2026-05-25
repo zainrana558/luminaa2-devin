@@ -4,6 +4,7 @@ import { useState, useEffect, Component, Suspense } from "react";
 import type { ReactNode } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
+import { ThemeApplier } from "@/components/ui/ThemeApplier";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, Play, Plus, Check, Star } from "lucide-react";
@@ -158,7 +159,7 @@ function HeroCard({ item, onPlay }: { item: MediaItem; onPlay: (i: MediaItem) =>
   );
 }
 
-// ── Enriched Metadata (max 20 lines added) ───────────────────────────────────
+// ── Enriched Metadata (max 20 lines added) ────────────────────────────���──────
 function AnimeMetadata({ item }: { item: MediaItem | undefined }) {
   const [animeData, setAnimeData] = useState<Record<string, unknown> | null>(null);
   useEffect(() => {
@@ -227,6 +228,7 @@ export default function AnimePageClient({ movies, tv }: AnimePageClientProps) {
 
   return (
     <ErrorBoundary fallback={<ErrorFallback />}>
+      <ThemeApplier theme="anime" />
       <div className="relative min-h-screen overflow-x-hidden"
         style={{ background: "linear-gradient(160deg,#120008 0%,#1a0014 40%,#0d000a 100%)" }}>
 
