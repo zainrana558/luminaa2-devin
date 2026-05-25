@@ -170,14 +170,14 @@ export default function DetailModal({
                   initial={{ opacity: 0, y: 16 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.3, ease: "easeOut", delay: 0.1 }}
-                  className="text-2xl font-bold md:text-3xl"
+                  style={{ fontSize: "clamp(1.8rem, 4vw, 3rem)", fontWeight: 800, color: "#ffffff", marginBottom: "12px" }}
                 >
                   {getTitle(details)}
                 </motion.h2>
               </div>
             </div>
 
-            <div className="space-y-6 p-6">
+            <div style={{ paddingTop: "40px", paddingLeft: "24px", paddingRight: "24px", paddingBottom: "24px" }} className="space-y-6">
               {/* Actions */}
               <div className="flex flex-wrap items-center gap-3">
                 <motion.button
@@ -206,7 +206,8 @@ export default function DetailModal({
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3, ease: "easeOut", delay: 0.16 }}
-                className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground"
+                className="flex flex-wrap items-center"
+                style={{ gap: "24px", fontSize: "0.9rem", color: "#888888", margin: "16px 0" }}
               >
                 <span className="flex items-center gap-1">
                   <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
@@ -230,7 +231,7 @@ export default function DetailModal({
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3, ease: "easeOut", delay: 0.22 }}
-                className="text-sm leading-relaxed text-foreground/80"
+                style={{ maxWidth: "640px", lineHeight: 1.7, fontSize: "0.95rem", color: "#cccccc", marginTop: "16px" }}
               >
                 {details.overview}
               </motion.p>
@@ -241,12 +242,13 @@ export default function DetailModal({
                   initial={{ opacity: 0, y: 16 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.3, ease: "easeOut", delay: 0.28 }}
-                  className="flex flex-wrap gap-2"
+                  className="flex flex-wrap"
+                  style={{ gap: "8px", marginTop: "16px" }}
                 >
                   {details.genres.map((genre) => (
                     <span
                       key={genre.id}
-                      className="rounded-full border border-border px-3 py-1 text-xs text-muted-foreground"
+                      style={{ padding: "4px 12px", border: "1px solid #333333", borderRadius: "4px", fontSize: "0.8rem", color: "#999999", background: "transparent" }}
                     >
                       {genre.name}
                     </span>
@@ -277,7 +279,7 @@ export default function DetailModal({
 
               {/* Cast — scroll arrows reuse ContentRow pattern; hover scale 1.05; stagger entrance */}
               {details.credits?.cast && details.credits.cast.length > 0 && (
-                <div className="space-y-3">
+                <div style={{ marginTop: "48px" }}>
                   <AccentHeading>Cast</AccentHeading>
                   <div className="relative group">
                     <button
@@ -288,21 +290,17 @@ export default function DetailModal({
                       <ChevronLeft className="h-4 w-4" />
                     </button>
 
-                    <div ref={castScrollRef} className="flex gap-4 overflow-x-auto pb-2" style={{ scrollbarWidth: "none" }}>
+                    <div ref={castScrollRef} className="flex overflow-x-auto pb-2" style={{ scrollbarWidth: "none", gap: "20px" }}>
                       {details.credits.cast.slice(0, 12).map((member: CastMember, i: number) => (
                         <div
                           key={member.id}
                           className="flex-shrink-0 text-center cursor-default"
-                          style={{
-                            opacity: 1,
-                            animation: `castFade 250ms ease-out ${i * 40}ms both`,
-                          }}
+                          style={{ animation: `castFade 250ms ease-out ${i * 40}ms both` }}
                         >
                           <style>{`@keyframes castFade { from { opacity:0; transform:translateY(12px);} to { opacity:1; transform:translateY(0);} }`}</style>
-                          {/* Avatar: scale 1.05 on hover, clean shadow */}
                           <div
-                            className="relative h-16 w-16 overflow-hidden rounded-full bg-muted transition-all duration-200 ease-out hover:scale-[1.05]"
-                            style={{ transitionProperty: "transform, box-shadow" }}
+                            className="overflow-hidden rounded-full bg-muted transition-all duration-200 ease-out hover:scale-[1.05]"
+                            style={{ width: "80px", height: "80px", position: "relative", transitionProperty: "transform, box-shadow" }}
                             onMouseEnter={e => (e.currentTarget.style.boxShadow = "0 6px 16px rgba(0,0,0,0.5)")}
                             onMouseLeave={e => (e.currentTarget.style.boxShadow = "")}
                           >
@@ -314,8 +312,8 @@ export default function DetailModal({
                               </div>
                             )}
                           </div>
-                          <p className="mt-1 w-16 truncate text-xs font-medium">{member.name}</p>
-                          <p className="w-16 truncate text-[10px] text-muted-foreground">{member.character}</p>
+                          <p className="truncate" style={{ fontSize: "0.85rem", fontWeight: 600, color: "#ffffff", marginTop: "8px", width: "80px" }}>{member.name}</p>
+                          <p className="truncate" style={{ fontSize: "0.75rem", color: "#888888", width: "80px" }}>{member.character}</p>
                         </div>
                       ))}
                     </div>
@@ -333,7 +331,7 @@ export default function DetailModal({
 
               {/* More Like This — IntersectionObserver entrance + accent heading */}
               {details.similar?.results && details.similar.results.length > 0 && (
-                <div className="space-y-3" ref={similarRef}>
+                <div style={{ marginTop: "48px" }} ref={similarRef}>
                   <AccentHeading>More Like This</AccentHeading>
                   <div className="flex gap-3 overflow-x-auto pb-2" style={{ scrollbarWidth: "none" }}>
                     {details.similar.results.slice(0, 10).map((item: MediaItem, i: number) => (
