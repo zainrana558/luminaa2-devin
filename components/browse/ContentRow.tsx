@@ -51,7 +51,7 @@ export default function ContentRow({ title, items, onItemClick, mediaType }: Con
   if (!items.length) return null;
 
   return (
-    <div className="space-y-2 px-4 md:px-8">
+    <div className="space-y-2 px-4 md:px-8" style={{ paddingBottom: "64px" }}>
       {/* Heading: fade + translateX(-16px)→0, 4px left accent bar */}
       <div
         ref={headingRef}
@@ -59,26 +59,27 @@ export default function ContentRow({ title, items, onItemClick, mediaType }: Con
           opacity: headingVisible ? 1 : 0,
           transform: headingVisible ? "translateX(0)" : "translateX(-16px)",
           transition: "opacity 280ms ease-out, transform 280ms ease-out",
-          paddingLeft: "12px",
+          paddingLeft: "14px",
           position: "relative",
+          marginBottom: "20px",
         }}
       >
-        {/* 4px left accent bar */}
+        {/* 4px left accent bar — gradient per spec */}
         <span
           aria-hidden
           style={{
             position: "absolute",
             left: 0,
-            top: "3px",
-            bottom: "3px",
+            top: 0,
+            bottom: 0,
             width: "4px",
             borderRadius: "2px",
-            background: "var(--color-primary, #7c3aed)",
+            background: "linear-gradient(to bottom, #7c3aed, #ec4899)",
             opacity: headingVisible ? 1 : 0,
             transition: "opacity 280ms ease-out 80ms",
           }}
         />
-        <h2 className="text-lg font-semibold md:text-xl">{title}</h2>
+        <h2 style={{ fontSize: "clamp(1.1rem, 2vw, 1.35rem)", fontWeight: 700, color: "#ffffff" }}>{title}</h2>
       </div>
 
       <div className="group relative" ref={rowRef}>

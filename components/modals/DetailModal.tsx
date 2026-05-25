@@ -21,13 +21,13 @@ interface DetailModalProps {
 // Reusable accent heading — matches ContentRow pattern from Prompt 3
 function AccentHeading({ children }: { children: React.ReactNode }) {
   return (
-    <div style={{ position: "relative", paddingLeft: "12px" }}>
+    <div style={{ position: "relative", paddingLeft: "14px", marginBottom: "20px" }}>
       <span aria-hidden style={{
-        position: "absolute", left: 0, top: "3px", bottom: "3px",
+        position: "absolute", left: 0, top: 0, bottom: 0,
         width: "4px", borderRadius: "2px",
-        background: "var(--color-primary, #7c3aed)",
+        background: "linear-gradient(to bottom, #7c3aed, #ec4899)",
       }} />
-      <h3 className="text-base font-semibold md:text-lg">{children}</h3>
+      <h3 style={{ fontSize: "clamp(1.1rem, 2vw, 1.35rem)", fontWeight: 700, color: "#ffffff" }}>{children}</h3>
     </div>
   );
 }

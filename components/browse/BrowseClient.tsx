@@ -48,7 +48,7 @@ export default function BrowseClient({ heroItems, rows, profileId, animePopular 
         onInfo={handleItemClick}
       />
 
-      <div className="-mt-16 relative z-10 space-y-8 pb-12">
+      <div className="-mt-16 relative z-10 space-y-0 pb-12 pt-10">
         {rows.map((row) => (
           <ContentRow
             key={row.title}
