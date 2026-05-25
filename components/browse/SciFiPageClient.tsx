@@ -314,7 +314,7 @@ export default function SciFiPageClient({ movies, tv }: SciFiPageClientProps) {
         />
 
         {/* ── All content z-index 10 ───────────────────────────────── */}
-        <div className="relative" style={{ zIndex: 10 }}>
+        <div className="relative mx-auto w-full" style={{ zIndex: 10, maxWidth: "1400px" }}>
 
           {/* Dark space frosted glass navbar */}
           <motion.nav
@@ -377,6 +377,8 @@ export default function SciFiPageClient({ movies, tv }: SciFiPageClientProps) {
                   textShadow:
                     "0 0 20px rgba(0,255,255,0.8), 0 0 40px rgba(0,180,255,0.4), 0 4px 16px rgba(0,0,0,0.9)",
                   letterSpacing: "0.14em",
+                  borderLeft: "4px solid #38bdf8",
+                  paddingLeft: "12px",
                 }}
               >
                 SCI-FI

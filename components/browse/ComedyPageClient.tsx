@@ -204,7 +204,7 @@ export default function ComedyPageClient({ movies, tv }: ComedyPageClientProps) 
           style={{ background: "rgba(0,0,0,0.35)", zIndex: 1 }} />
 
         {/* Content z-10 */}
-        <div className="relative" style={{ zIndex: 10 }}>
+        <div className="relative mx-auto w-full" style={{ zIndex: 10, maxWidth: "1400px" }}>
 
           {/* Frosted navbar */}
           <motion.nav
@@ -242,6 +242,8 @@ export default function ComedyPageClient({ movies, tv }: ComedyPageClientProps) 
                   WebkitBackgroundClip: "text",
                   WebkitTextFillColor: "transparent",
                   fontFamily: "'Fredoka One', 'Comic Sans MS', cursive",
+                  borderLeft: "4px solid #f59e0b",
+                  paddingLeft: "12px",
                 }}>COMEDY</h1>
               <p className="mt-1 text-xs text-yellow-300/60 tracking-widest">Laugh · TMDB Genre 35</p>
             </motion.div>

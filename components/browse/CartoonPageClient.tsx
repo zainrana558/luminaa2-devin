@@ -322,7 +322,7 @@ export default function CartoonPageClient({
         />
 
         {/* ── All content z-index 10 ────────────────────────────────── */}
-        <div className="relative" style={{ zIndex: 10 }}>
+        <div className="relative mx-auto w-full" style={{ zIndex: 10, maxWidth: "1400px" }}>
 
           {/* Frosted glass navbar */}
           <motion.nav
@@ -385,6 +385,8 @@ export default function CartoonPageClient({
                   WebkitBackgroundClip: "text",
                   WebkitTextFillColor: "transparent",
                   filter: "drop-shadow(0 4px 12px rgba(0,0,0,0.3))",
+                  borderLeft: "4px solid #2563eb",
+                  paddingLeft: "12px",
                 }}
               >
                 CARTOON

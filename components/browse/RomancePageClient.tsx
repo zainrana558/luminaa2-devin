@@ -209,7 +209,7 @@ export default function RomancePageClient({ movies, tv }: RomancePageClientProps
           style={{ background: "rgba(0,0,0,0.4)", zIndex: 1 }} />
 
         {/* Content z-10 */}
-        <div className="relative" style={{ zIndex: 10 }}>
+        <div className="relative mx-auto w-full" style={{ zIndex: 10, maxWidth: "1400px" }}>
 
           {/* Soft pink frosted navbar */}
           <motion.nav
@@ -248,6 +248,8 @@ export default function RomancePageClient({ movies, tv }: RomancePageClientProps
                   WebkitTextFillColor: "transparent",
                   fontFamily: "'Playfair Display','Georgia',serif",
                   fontStyle: "italic",
+                  borderLeft: "4px solid #c2848a",
+                  paddingLeft: "12px",
                 }}>Romance</h1>
               <p className="mt-1 text-xs text-pink-300/60 tracking-widest">Love Stories · TMDB Genre 10749</p>
             </motion.div>

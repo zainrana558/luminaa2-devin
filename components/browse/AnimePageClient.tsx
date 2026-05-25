@@ -243,7 +243,7 @@ export default function AnimePageClient({ movies, tv }: AnimePageClientProps) {
           style={{ background: "rgba(0,0,0,0.45)", zIndex: 1 }} />
 
         {/* All content z-index 10 */}
-        <div className="relative" style={{ zIndex: 10 }}>
+        <div className="relative mx-auto w-full" style={{ zIndex: 10, maxWidth: "1400px" }}>
 
           {/* Frosted glass navbar */}
           <motion.nav
@@ -280,6 +280,8 @@ export default function AnimePageClient({ movies, tv }: AnimePageClientProps) {
                   WebkitBackgroundClip: "text",
                   WebkitTextFillColor: "transparent",
                   fontFamily: "serif",
+                  borderLeft: "4px solid #e8a0bf",
+                  paddingLeft: "12px",
                 }}>ANIME</h1>
               <p className="mt-1 text-xs text-pink-300/60 tracking-[0.3em]">Japanese Animation · Genre 16</p>
             </motion.div>

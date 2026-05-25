@@ -213,7 +213,7 @@ export default function ActionPageClient({ movies, tv }: ActionPageClientProps) 
           style={{ background: "rgba(0,0,0,0.5)", zIndex: 1 }} />
 
         {/* Content z-10 */}
-        <div className="relative" style={{ zIndex: 10 }}>
+        <div className="relative mx-auto w-full" style={{ zIndex: 10, maxWidth: "1400px" }}>
 
           {/* Frosted dark steel navbar */}
           <motion.nav
@@ -252,6 +252,8 @@ export default function ActionPageClient({ movies, tv }: ActionPageClientProps) 
                   WebkitTextFillColor: "transparent",
                   fontFamily: "'Bebas Neue','Impact',sans-serif",
                   letterSpacing: "0.1em",
+                  borderLeft: "4px solid #d97706",
+                  paddingLeft: "12px",
                 }}>ACTION</h1>
               <p className="mt-1 text-xs text-orange-400/60 tracking-widest">TMDB Genre 28 · High Intensity</p>
             </motion.div>

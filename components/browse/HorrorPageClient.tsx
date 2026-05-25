@@ -292,7 +292,7 @@ export default function HorrorPageClient({ movies, tv }: HorrorPageClientProps) 
         />
 
         {/* ── All content z-index 10 ───────────────────────────────── */}
-        <div className="relative" style={{ zIndex: 10 }}>
+        <div className="relative mx-auto w-full" style={{ zIndex: 10, maxWidth: "1400px" }}>
 
           {/* Dark frosted glass navbar */}
           <motion.nav
@@ -363,6 +363,8 @@ export default function HorrorPageClient({ movies, tv }: HorrorPageClientProps) 
                   textShadow:
                     "0 0 20px rgba(0,255,68,0.7), 0 0 40px rgba(0,200,50,0.35), 0 4px 16px rgba(0,0,0,0.8)",
                   letterSpacing: "0.12em",
+                  borderLeft: "4px solid #6b0f1a",
+                  paddingLeft: "12px",
                 }}
               >
                 HORROR
