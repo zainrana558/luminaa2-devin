@@ -18,11 +18,11 @@ const playfair = Playfair_Display({
 export const metadata: Metadata = {
   title: "Luminaa2 — Premium Streaming",
   description:
-    "Ultra-premium cinematic streaming platform with 7 immersive themes — Action, Romance, Anime, Cartoon, Sci-Fi, Cinematic, Horror.",
-  keywords: ["streaming", "movies", "anime", "tv shows", "horror", "cinematic"],
+    "Ultra-premium streaming platform with 7 immersive themes — Action, Romance, Anime, Cartoon, Sci-Fi, Comedy, Horror.",
+  keywords: ["streaming", "movies", "anime", "tv shows", "horror", "comedy", "action"],
   openGraph: {
     title: "Luminaa2 — Premium Streaming",
-    description: "Seven cinematic worlds. One premium platform.",
+    description: "Seven immersive worlds. One premium platform.",
     type: "website",
   },
 };

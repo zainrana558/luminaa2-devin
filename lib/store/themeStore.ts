@@ -4,7 +4,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
 export type Theme =
-  | "cinematic"
+  | "comedy"
   | "action"
   | "romance"
   | "anime"
@@ -20,19 +20,17 @@ export interface ThemeConfig {
   to: string;
   preview: string; // background CSS for preview swatch
   font: string;
-  emoji: string;
 }
 
 export const THEMES: ThemeConfig[] = [
   {
-    id: "cinematic",
-    label: "Cinematic",
-    description: "Sepia & elegance",
-    from: "#c9a84c",
-    to: "#f0d080",
-    preview: "linear-gradient(135deg,#0c0a08,#241e14)",
-    font: "serif",
-    emoji: "🎬",
+    id: "comedy",
+    label: "Comedy",
+    description: "Bright, bouncy & fun",
+    from: "#f9ca24",
+    to: "#f0932b",
+    preview: "linear-gradient(135deg,#0c0a0e,#1a1020)",
+    font: "sans-serif",
   },
   {
     id: "action",
@@ -42,7 +40,6 @@ export const THEMES: ThemeConfig[] = [
     to: "#ef6c00",
     preview: "linear-gradient(135deg,#0a0a08,#1a1008)",
     font: "sans-serif",
-    emoji: "💥",
   },
   {
     id: "romance",
@@ -52,7 +49,6 @@ export const THEMES: ThemeConfig[] = [
     to: "#ad1457",
     preview: "linear-gradient(135deg,#0f080c,#1a0c14)",
     font: "serif",
-    emoji: "🌹",
   },
   {
     id: "anime",
@@ -62,7 +58,6 @@ export const THEMES: ThemeConfig[] = [
     to: "#e040fb",
     preview: "linear-gradient(135deg,#080814,#0c1028)",
     font: "sans-serif",
-    emoji: "⚡",
   },
   {
     id: "cartoon",
@@ -72,17 +67,15 @@ export const THEMES: ThemeConfig[] = [
     to: "#ff6d00",
     preview: "linear-gradient(135deg,#0a0c18,#10122a)",
     font: "sans-serif",
-    emoji: "🎨",
   },
   {
     id: "scifi",
     label: "Sci-Fi",
-    description: "Matrix green code",
+    description: "Galaxy & matrix code",
     from: "#00ff88",
     to: "#40c4ff",
     preview: "linear-gradient(135deg,#000a08,#001510)",
     font: "monospace",
-    emoji: "🤖",
   },
   {
     id: "horror",
@@ -92,7 +85,6 @@ export const THEMES: ThemeConfig[] = [
     to: "#880000",
     preview: "linear-gradient(135deg,#040204,#0a040a)",
     font: "cursive",
-    emoji: "☠️",
   },
 ];
 
@@ -104,7 +96,7 @@ interface ThemeState {
 export const useThemeStore = create<ThemeState>()(
   persist(
     (set) => ({
-      theme: "cinematic",
+      theme: "comedy",
       setTheme: (theme) => set({ theme }),
     }),
     { name: "luminaa2-theme" }

@@ -1,41 +1,69 @@
 @import "tailwindcss";
 
 /* ─────────────────────────────────────────────────────────────────────────────
-   LUMINAA2 — CINEMATIC THEME SYSTEM
+   LUMINAA2 — THEME SYSTEM
    7 themes via [data-theme] on <html>. CSS variables consumed by Tailwind.
-   Default: no data-theme = dark base (cinematic neutral).
+   Default: no data-theme = dark base (neutral dark).
 ───────────────────────────────────────────────────────────────────────────── */
 
 /* ── Base / Dark Default ───────────────────────────────────────────────────── */
-:root,
-[data-theme="cinematic"] {
-  --color-background:        #0c0a08;
-  --color-foreground:        #e8e0d0;
-  --color-muted:             #1c1810;
-  --color-muted-foreground:  #9e9080;
-  --color-card:              #161210;
-  --color-card-foreground:   #e8e0d0;
-  --color-border:            #2c2418;
-  --color-input:             #2c2418;
-  --color-ring:              #c9a84c;
-  --color-primary:           #c9a84c;
-  --color-primary-foreground:#0c0a08;
-  --color-secondary:         #241e14;
-  --color-secondary-foreground:#e8e0d0;
-  --color-accent:            #c9a84c;
+:root {
+  --color-background:        #0c0a0e;
+  --color-foreground:        #f0eef8;
+  --color-muted:             #1a1624;
+  --color-muted-foreground:  #9088b0;
+  --color-card:              #14111e;
+  --color-card-foreground:   #f0eef8;
+  --color-border:            #261e38;
+  --color-input:             #261e38;
+  --color-ring:              #f9ca24;
+  --color-primary:           #f9ca24;
+  --color-primary-foreground:#0c0a0e;
+  --color-secondary:         #201830;
+  --color-secondary-foreground:#f0eef8;
+  --color-accent:            #f0932b;
   --color-destructive:       #ef4444;
   --color-destructive-foreground:#ffffff;
 
-  /* Theme-specific extras */
-  --theme-glow:              rgba(201,168,76,0.35);
-  --theme-hero-gradient:     linear-gradient(135deg,#0c0a08 0%,#1a1408 60%,#0c0a08 100%);
-  --theme-card-border:       rgba(201,168,76,0.15);
-  --theme-particle-color:    "201,168,76";
-  --theme-accent-rgb:        201,168,76;
-  --theme-font-display:      "Playfair Display", "Georgia", serif;
-  --theme-text-shadow:       0 2px 12px rgba(201,168,76,0.3);
-  --theme-logo-from:         #c9a84c;
-  --theme-logo-to:           #f0d080;
+  --theme-glow:              rgba(249,202,36,0.4);
+  --theme-hero-gradient:     linear-gradient(135deg,#0c0a0e 0%,#1a1020 60%,#0c0a0e 100%);
+  --theme-card-border:       rgba(249,202,36,0.15);
+  --theme-particle-color:    "249,202,36";
+  --theme-accent-rgb:        249,202,36;
+  --theme-font-display:      "Nunito", "Fredoka One", "Arial Rounded MT Bold", sans-serif;
+  --theme-text-shadow:       0 2px 16px rgba(249,202,36,0.35);
+  --theme-logo-from:         #f9ca24;
+  --theme-logo-to:           #f0932b;
+}
+
+/* ── Comedy ───────────────────────────────────────────────────────────────── */
+[data-theme="comedy"] {
+  --color-background:        #0c0a0e;
+  --color-foreground:        #f0eef8;
+  --color-muted:             #1a1624;
+  --color-muted-foreground:  #9088b0;
+  --color-card:              #14111e;
+  --color-card-foreground:   #f0eef8;
+  --color-border:            #261e38;
+  --color-input:             #261e38;
+  --color-ring:              #f9ca24;
+  --color-primary:           #f9ca24;
+  --color-primary-foreground:#0c0a0e;
+  --color-secondary:         #201830;
+  --color-secondary-foreground:#f0eef8;
+  --color-accent:            #f0932b;
+  --color-destructive:       #ef4444;
+  --color-destructive-foreground:#ffffff;
+
+  --theme-glow:              rgba(249,202,36,0.4);
+  --theme-hero-gradient:     linear-gradient(135deg,#0c0a0e 0%,#1a1020 60%,#0c0a0e 100%);
+  --theme-card-border:       rgba(249,202,36,0.15);
+  --theme-particle-color:    "249,202,36";
+  --theme-accent-rgb:        249,202,36;
+  --theme-font-display:      "Nunito", "Fredoka One", "Arial Rounded MT Bold", sans-serif;
+  --theme-text-shadow:       0 2px 16px rgba(249,202,36,0.35);
+  --theme-logo-from:         #f9ca24;
+  --theme-logo-to:           #f0932b;
 }
 
 /* ── Action ───────────────────────────────────────────────────────────────── */
@@ -343,7 +371,30 @@ button:active,
 
 /* ─────────────────────────────────────────────────────────────────────────────
    MAGNETIC BUTTON — pure CSS assist (JS handles the transform)
+─────────────────────────────��─────────────────────────────────────────────── */
+/* ─────────────────────────────────────────────────────────────────────────────
+   COMEDY THEME — Bouncy & confetti keyframes
 ───────────────────────────────────────────────────────────────────────────── */
+@keyframes confettiFall {
+  0%   { transform: translateY(-20px) rotate(0deg);   opacity: 0.9; }
+  80%  { opacity: 0.8; }
+  100% { transform: translateY(110vh) rotate(540deg); opacity: 0; }
+}
+
+@keyframes balloonFloat {
+  0%,100% { transform: translateY(0) rotate(-2deg); }
+  50%     { transform: translateY(-18px) rotate(2deg); }
+}
+
+@keyframes bouncePop {
+  0%,100% { transform: scale(1); }
+  50%     { transform: scale(1.12); }
+}
+
+[data-theme="comedy"] .comedy-bounce {
+  animation: bouncePop 1.8s ease-in-out infinite;
+}
+
 .magnetic-btn {
   transition: transform 0.25s cubic-bezier(0.22,1,0.36,1), box-shadow 0.25s ease;
   will-change: transform;
