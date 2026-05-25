@@ -10,7 +10,7 @@ export default function AuthLayout({
       style={{ background: "linear-gradient(135deg, #0a0a0f 0%, #110a1f 40%, #1a0a2e 70%, #0d0a1a 100%)" }}
     >
       <CherryBlossoms />
-      <div className="relative z-10 w-full max-w-md">
+      <div className="relative z-10 w-full max-w-[420px]">
         {children}
       </div>
     </div>

@@ -51,7 +51,7 @@ export default function LoginForm() {
       initial={{ opacity: 0, scale: 0.96 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.5, ease: "easeOut" }}
-      className="w-full rounded-3xl border border-white/10 bg-white/10 p-8 shadow-2xl backdrop-blur-md space-y-6"
+      className="w-full rounded-xl border border-[#1f1f1f] bg-[#111111] p-10 shadow-2xl space-y-4"
     >
       {/* Logo */}
       <motion.div
@@ -60,10 +60,10 @@ export default function LoginForm() {
         transition={{ delay: 0.15, duration: 0.5 }}
         className="text-center"
       >
-        <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+        <h1 className="text-[1.75rem] font-extrabold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent text-center mb-1">
           Lumina
         </h1>
-        <p className="mt-2 text-sm text-white/60">Sign in to your account</p>
+        <p className="text-[0.9rem] text-[#888888] text-center mb-7">Sign in to your account</p>
       </motion.div>
 
       {/* Form */}
@@ -74,7 +74,7 @@ export default function LoginForm() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
-          className="rounded-full border-white/20 bg-white/10 text-white placeholder:text-white/40 focus-visible:ring-purple-400/60 focus-visible:border-transparent"
+          className="rounded-lg border-[#2a2a2a] bg-[#1a1a1a] text-white text-[0.95rem] placeholder:text-[#555] py-3 px-4 focus-visible:ring-purple-400/60 focus-visible:border-transparent"
         />
         <Input
           type="password"
@@ -82,7 +82,7 @@ export default function LoginForm() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
-          className="rounded-full border-white/20 bg-white/10 text-white placeholder:text-white/40 focus-visible:ring-purple-400/60 focus-visible:border-transparent"
+          className="rounded-lg border-[#2a2a2a] bg-[#1a1a1a] text-white text-[0.95rem] placeholder:text-[#555] py-3 px-4 focus-visible:ring-purple-400/60 focus-visible:border-transparent"
         />
 
         <AnimatePresence>
@@ -103,7 +103,7 @@ export default function LoginForm() {
         <Button
           type="submit"
           disabled={loading}
-          className="w-full rounded-full bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg hover:shadow-purple-500/40 hover:from-purple-500 hover:to-pink-500 hover:shadow-xl border-0"
+          className="w-full rounded-lg bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold text-base py-3.5 shadow-lg hover:shadow-purple-500/40 hover:from-purple-500 hover:to-pink-500 hover:shadow-xl border-0"
         >
           {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Mail className="h-4 w-4" />}
           Sign In
@@ -113,7 +113,7 @@ export default function LoginForm() {
       {/* Divider */}
       <div className="relative">
         <div className="absolute inset-0 flex items-center">
-          <span className="w-full border-t border-white/15" />
+          <span className="w-full border-t border-[#333333]" />
         </div>
         <div className="relative flex justify-center text-xs uppercase">
           <span className="bg-transparent px-2 text-white/40">or continue with</span>
@@ -125,7 +125,7 @@ export default function LoginForm() {
         <Button
           variant="outline"
           onClick={() => handleOAuth("google")}
-          className="rounded-full border-white/20 bg-white/10 text-white hover:bg-white/20 hover:shadow-lg hover:shadow-pink-500/20 transition-all duration-300"
+          className="rounded-lg border-white/20 bg-white/10 text-white hover:bg-white/20 hover:shadow-lg hover:shadow-pink-500/20 transition-all duration-300"
         >
           <svg className="h-4 w-4" viewBox="0 0 24 24">
             <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/>
@@ -138,7 +138,7 @@ export default function LoginForm() {
         <Button
           variant="outline"
           onClick={() => handleOAuth("github")}
-          className="rounded-full border-white/20 bg-white/10 text-white hover:bg-white/20 hover:shadow-lg hover:shadow-purple-500/20 transition-all duration-300"
+          className="rounded-lg border-white/20 bg-white/10 text-white hover:bg-white/20 hover:shadow-lg hover:shadow-purple-500/20 transition-all duration-300"
         >
           <Github className="h-4 w-4" />
           GitHub
@@ -148,7 +148,7 @@ export default function LoginForm() {
       {/* Divider */}
       <div className="relative">
         <div className="absolute inset-0 flex items-center">
-          <span className="w-full border-t border-white/15" />
+          <span className="w-full border-t border-[#333333]" />
         </div>
         <div className="relative flex justify-center text-xs uppercase">
           <span className="bg-transparent px-2 text-white/40">or</span>
@@ -156,12 +156,12 @@ export default function LoginForm() {
       </div>
 
       <Link href="/browse">
-        <Button variant="ghost" className="w-full rounded-full text-white/50 hover:text-white hover:bg-white/10">
+        <Button variant="ghost" className="w-full rounded-lg text-white/50 hover:text-white hover:bg-white/10">
           Continue as Guest
         </Button>
       </Link>
 
-      <p className="text-center text-sm text-white/50">
+      <p className="text-center text-[0.875rem] text-[#888888] mt-6">
         Don&apos;t have an account?{" "}
         <Link href="/signup" className="text-purple-400 hover:text-pink-400 transition-colors duration-200">
           Sign up
