@@ -52,6 +52,11 @@ export default function ContentRow({ title, items, onItemClick, mediaType }: Con
 
   return (
     <div className="space-y-2 px-4 md:px-8" style={{ paddingBottom: "64px" }}>
+      <style>{`
+        .content-row-cards > div { flex: 0 0 calc(50% - 10px); width: calc(50% - 10px); }
+        @media (min-width: 768px)  { .content-row-cards > div { flex: 0 0 calc(25% - 15px); width: calc(25% - 15px); } }
+        @media (min-width: 1280px) { .content-row-cards > div { flex: 0 0 calc(20% - 16px); width: calc(20% - 16px); } }
+      `}</style>
       {/* Heading: fade + translateX(-16px)→0, 4px left accent bar */}
       <div
         ref={headingRef}
@@ -99,8 +104,8 @@ export default function ContentRow({ title, items, onItemClick, mediaType }: Con
         {/* Cards with stagger entrance */}
         <div
           ref={scrollRef}
-          className="flex gap-3 overflow-x-auto scroll-smooth pb-2"
-          style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+          className="content-row-cards flex overflow-x-auto scroll-smooth pb-2"
+          style={{ scrollbarWidth: "none", msOverflowStyle: "none", gap: "20px" }}
         >
           {items.map((item, i) => (
             <div
