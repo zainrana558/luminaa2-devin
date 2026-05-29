@@ -59,6 +59,20 @@ export default function Navbar({ isGuest = false }: NavbarProps) {
                 My List
               </Link>
             )}
+            <div className="h-4 w-px bg-border" />
+            {[
+              { href: "/anime",   label: "Anime" },
+              { href: "/cartoon", label: "Cartoon" },
+              { href: "/horror",  label: "Horror" },
+              { href: "/comedy",  label: "Comedy" },
+              { href: "/action",  label: "Action" },
+              { href: "/romance", label: "Romance" },
+              { href: "/scifi",   label: "Sci-Fi" },
+            ].map(({ href, label }) => (
+              <Link key={href} href={href} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                {label}
+              </Link>
+            ))}
           </div>
         </div>
 

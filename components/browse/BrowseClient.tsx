@@ -5,6 +5,7 @@ import HeroBanner from "./HeroBanner";
 import ContentRow from "./ContentRow";
 import DetailModal from "@/components/modals/DetailModal";
 import VideoPlayer from "@/components/modals/VideoPlayer";
+import GenreBanner from "@/components/genre/GenreBanner";
 import type { MediaItem, ContentRow as ContentRowType } from "@/types";
 
 interface BrowseClientProps {
@@ -43,6 +44,7 @@ export default function BrowseClient({ heroItems, rows, profileId }: BrowseClien
         onPlay={handlePlay}
         onInfo={handleItemClick}
       />
+      <GenreBanner />
 
       <div className="-mt-16 relative z-10 space-y-8 pb-12">
         {rows.map((row) => (
